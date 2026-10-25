@@ -1,0 +1,20 @@
+<!doctype html><html><body style="margin:0;background:#fff"><canvas id="c" width="1000" height="560"></canvas>
+<script type="importmap">{"imports":{"three":"./node_modules/three/build/three.module.js"}}</script>
+<script type="module">
+import * as THREE from 'three';
+window.THREE=THREE;
+Object.assign(window,{Z:THREE.Mesh,Q:THREE.MeshStandardMaterial,ua:THREE.MeshBasicMaterial,J:THREE.Vector3,Qi:THREE.BufferGeometry,Y:THREE.Float32BufferAttribute,Bo:THREE.TubeGeometry,vo:THREE.CatmullRomCurve3,to:THREE.CylinderGeometry,eo:THREE.BoxGeometry,Io:THREE.PlaneGeometry,Ro:THREE.SphereGeometry,zo:THREE.TorusGeometry,no:THREE.ConeGeometry,Lo:THREE.RingGeometry,La:THREE.Line,Ns:THREE.PointLight,Xa:THREE.CanvasTexture,ze:THREE.RepeatWrapping,ri:THREE.Color,Xr:THREE.Group});
+for(const f of ['mrw_body.js','mrw_loft.js','mrw_parts.js','mrw_parts2.js','mrw_main.js']){const s=document.createElement('script');s.src=f+'?'+Date.now();document.head.appendChild(s);await new Promise(r=>{s.onload=r;s.onerror=r})}
+const canvas=document.getElementById('c');
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,preserveDrawingBuffer:true});
+renderer.setSize(1000,560,false);renderer.shadowMap.enabled=true;renderer.shadowMap.type=2;renderer.toneMapping=4;renderer.toneMappingExposure=1.0;
+const scene=new THREE.Scene();scene.background=new THREE.Color('#ffffff');
+scene.add(new THREE.HemisphereLight('#ffffff','#9a9a90',.9));
+const sun=new THREE.DirectionalLight('#fffbeb',1.6);sun.position.set(-5,9,7);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-5,right:5,top:5,bottom:-5,near:1,far:30});sun.shadow.bias=-4e-4;scene.add(sun);
+const gnd=new THREE.Mesh(new THREE.PlaneGeometry(60,60),new THREE.MeshStandardMaterial({color:'#ffffff',roughness:1}));gnd.rotation.x=-Math.PI/2;gnd.receiveShadow=true;scene.add(gnd);
+const grp=new THREE.Group();scene.add(grp);
+window.__err=null;try{__mrwagon(grp,{width:1.475,depth:3.395,height:1.625})}catch(e){window.__err=e.message+' '+e.stack.split('\n')[1]}
+const cam=new THREE.PerspectiveCamera(30,1000/560,.1,100);
+window.shot=(az,el,dist,ty,tz,tx)=>{const a=az*Math.PI/180,e=el*Math.PI/180,t=new THREE.Vector3(tx??0,ty??.8,tz??0);cam.position.set(t.x+Math.sin(a)*Math.cos(e)*dist,t.y+Math.sin(e)*dist,t.z+Math.cos(a)*Math.cos(e)*dist);cam.lookAt(t);renderer.render(scene,cam);return true};
+window.ready=true;
+</script></body></html>
