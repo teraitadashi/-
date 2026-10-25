@@ -5926,9 +5926,14 @@ const tube=(pts,r,mat,seg,closed)=>add(new Bo(new vo(pts.map(p=>new J(p[0],p[1],
 const WIN={zc:.72,a:.8,tc:.16*PI,b:.14*PI};
 const inWin=(z,th)=>{let t=Math.min(th,PI-th),tp=t<=WIN.tc?0:Math.pow((t-WIN.tc)/WIN.b,4);return Math.pow(Math.abs(z-WIN.zc)/WIN.a,4)+tp<=1};
 /* ---- hull ---- */
-add(surf(150,72,Zr,Zf,0,PI,0,inWin,1),mFab,!0,!0);
+add(surf(300,150,Zr,Zf,0,PI,0,inWin,1),mFab,!0,!0);
 /* window mesh + frame */
-let winMeshL=surf(60,40,WIN.zc-WIN.a-.02,WIN.zc+WIN.a+.02,0,PI,-.012,(z,t)=>!(inWin(z,t)&&Math.min(t,PI-t)>WIN.tc),5);
+let winMeshL=surf(160,80,WIN.zc-WIN.a-.02,WIN.zc+WIN.a+.02,0,PI,-.012,(z,t)=>!(inWin(z,t)&&Math.min(t,PI-t)>WIN.tc),5);
+add(winMeshL,mMesh);
+/* window frame (superellipse outline) on both sides */
+[0,1].forEach(sd=>{let pts=[];for(let i=0;i<=120;i++){let a=i/120*2*PI,c=Math.cos(a),sn=Math.sin(a),e=.25;let zz=WIN.zc+WIN.a*Math.sign(c)*Math.pow(Math.abs(c),e),tt=WIN.tc+WIN.b*(.5+.5*Math.sign(sn)*Math.pow(Math.abs(sn),e));let th=sd?PI-tt:tt;pts.push(sp(zz,th,.006))}tube(pts,.011,mSleeve,240,!0)});
+/* inner-tent Coleman patch visible through window */
+if(tx.logoOval){[.3*PI,.7*PI].forEach((th,k)=>{let m=new Z(new Io(.3,.15),new ua({map:tx.logoOval,transparent:!0,side:2,depthWrite:!1}));let p=sp(WIN.zc-.2,th,-.03);m.position.set(p[0],p[1],p[2]);m.rotation.y=k?-PI/2:PI/2;G.add(m)})}
 
 /* ---- dark ridge band ---- */
 add(surf(110,8,-1.9,1.4,.465*PI,.535*PI,.004,null,1),new Q({color:'#4b4037',roughness:.8,side:2}));
@@ -5954,13 +5959,29 @@ if(tx.logoBig){[-1,1].forEach(side=>{let m=new Z(new Io(.95,.47),new ua({map:tx.
  /* sill */
  add(new eo(2*Wf*.9+.04,.03,.06),mBlack).position.set(0,.03,Zf-.03);
  }
+/* ---- front door flap (right) + rolled left panel ---- */
+{
+ let[Wf,Hf,qf]=prof(Zf);const archY=x=>{let c=Math.min(1,Math.abs(x)/Wf);return Hf*Math.pow(Math.sqrt(1-c*c),qf)*.0+Hf*Math.pow(Math.max(0,Math.sin(Math.acos(c))),qf)};
+ const flap=(x0,x1,logo)=>{let pos=[],uv=[],idx=[],NX=40,NY=40;
+  for(let i=0;i<=NX;i++){let x=lerp(x0,x1,i/NX),yt=archY(x)*.985;for(let j=0;j<=NY;j++){let y=yt*j/NY,b=.1*Math.sin(Math.PI*i/NX)*Math.pow(1-j/NY,.5)+.02*Math.sin(Math.PI*j/NY);pos.push(x,y+.02,Zf+.015+b);uv.push(i/NX*1.5,j/NY*1.5)}}
+  for(let i=0;i<NX;i++)for(let j=0;j<NY;j++){let a=i*(NY+1)+j,b=(i+1)*(NY+1)+j,c=b+1,d=a+1;idx.push(a,b,d,b,c,d)}
+  let g=new Qi;g.setAttribute('position',new Y(pos,3));g.setAttribute('uv',new Y(uv,2));g.setIndex(idx);g.computeVertexNormals();return g};
+ add(flap(.12*Wf,Wf*.995),mFab,!0,!0);
+ /* vertical zipper edge + seams */
+ {let pts=[];for(let j=0;j<=24;j++){let y=archY(.12*Wf)*.985*j/24;pts.push([.12*Wf,y+.02,Zf+.015+.02*Math.sin(Math.PI*j/24)])}tube(pts,.012,mDark,48)}
+ if(tx.logoPatch){let m=new Z(new Io(.5,.25),new ua({map:tx.logoPatch,transparent:!0,side:2,depthWrite:!1}));m.position.set(.58*Wf,.3,Zf+.13);G.add(m)}
+ /* left panel gathered/rolled to the side with tie band */
+ {let pts=[],base=-.34*Wf;for(let j=0;j<=24;j++){let y=archY(base)*.97*j/24;pts.push([base-.04*Math.sin(Math.PI*j/24),y+.03,Zf+.05])}tube(pts,.07,mFab,60);[.3,.62].forEach(k=>{let y=archY(base)*.97*k;let b=add(new zo(.075,.01,6,16),mDark);b.position.set(base-.04*Math.sin(Math.PI*k),y+.03,Zf+.05);b.rotation.x=PI/2})}
+ /* Coleman + model name on front crown */
+ if(tx.logoBig){let m=new Z(new Io(1.0,.5),new ua({map:tx.logoBig,transparent:!0,opacity:.95,side:2,depthWrite:!1}));let p=sp(Zf-.005,.5*PI,.012);m.position.set(0,p[1]-.22,Zf+.02);G.add(m)}
+}
 /* ---- canopy flap ---- */
 const CP={x:1.04,z1:3.22,y0:1.3,y1:1.74};
 {
  let pos=[],idx=[],uv=[];const NS=16,NT=16;
  for(let i=0;i<=NT;i++){let t=i/NT;for(let j=0;j<=NS;j++){let s=j/NS*2-1,rr=sp(Zf,lerp(.2*PI,.8*PI,(s+1)/2),.025),fx=s*(CP.x+.02),y=lerp(rr[1],CP.y1,Math.pow(t,.92))-.05*Math.sin(PI*t)-.025*(1-s*s)*Math.sin(PI*t*.5+.2);pos.push(lerp(rr[0],fx,t),y,lerp(rr[2],CP.z1,t));uv.push((s+1)*1.2,t*1.5)}}
  for(let i=0;i<NT;i++)for(let j=0;j<NS;j++){let a=i*(NS+1)+j,b=(i+1)*(NS+1)+j,c=b+1,d=a+1;idx.push(a,b,d,b,c,d)}
- let g=new Qi;g.setAttribute('position',new Y(pos,3));g.setAttribute('uv',new Y(uv,2));g.setIndex(idx);g.computeVertexNormals();add(g,mFab2,!0,!0);
+ let g=new Qi;g.setAttribute('position',new Y(pos,3));g.setAttribute('uv',new Y(uv,2));g.setIndex(idx);g.computeVertexNormals();add(g,mFab2,!0,!0);{let gu=g.clone();let up=new Z(gu,new Q({color:'#3b3a3a',roughness:.85,side:1}));up.position.y=-.006;up.castShadow=!0;G.add(up)}
  /* hem + seam edges */
  let edgeF=[];for(let j=0;j<=16;j++){let s=j/16*2-1;edgeF.push([s*(CP.x+.02),CP.y1-.003-.0,CP.z1])}
  tube(edgeF,.011,mSleeve,24);
