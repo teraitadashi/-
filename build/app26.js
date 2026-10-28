@@ -5887,19 +5887,23 @@ const __TY={W:200,D:95,LH:3.5,LW:8,RH:6.5,rw:10,
  park:[[68,22],[121,15],[123,28],[70,37]],
  ev:[[6,44,6],[13,53,5],[1,56,5],[18,47,4],[-4,48,5]],
  shelter:{x:63,z:43,w:8,d:4.5,r:-20},
- toilet:{x:131,z:20,w:5,d:4,r:-8}};
+ toilet:{x:138,z:10.5,w:5,d:4,r:-6},
+ /* 駐車場の東端からトイレ前を通り、護岸を横切って河川敷(砂利)へ下りる道 */
+ ramp:[[121,21],[135,19],[150,17.5],[162,17.5],[171,20],[177,26],[181,33]],rampH:[3.5,3.5,3.5,3.5,2.9,1.5,.02],rampW:2.6};
 function __tyIs(site){return !!(site&&site.name&&site.name.includes('遠井'))}
 function __tySD(P,x,z){let best=1e9,sg=1;for(let i=0;i<P.length-1;i++){const ax=P[i][0],az=P[i][1],dx=P[i+1][0]-ax,dz=P[i+1][1]-az,L2=dx*dx+dz*dz;let t=((x-ax)*dx+(z-az)*dz)/L2;t=t<0?0:t>1?1:t;const d=Math.hypot(x-ax-dx*t,z-az-dz*t);if(d<best){best=d;sg=dx*(z-az)-dz*(x-ax)>=0?1:-1}}return best*sg}
 function __tyZ(P,x){for(let i=0;i<P.length-1;i++){const a=P[i],b=P[i+1];if(x<=b[0]||i===P.length-2){const t=(x-a[0])/(b[0]-a[0]);return a[1]+(b[1]-a[1])*t}}return P[0][1]}
+function __tyNear(P,x,z){let best=1e9,bi=0,bt=0;for(let i=0;i<P.length-1;i++){const ax=P[i][0],az=P[i][1],dx=P[i+1][0]-ax,dz=P[i+1][1]-az;let t=((x-ax)*dx+(z-az)*dz)/(dx*dx+dz*dz);t=t<0?0:t>1?1:t;const d=Math.hypot(x-ax-dx*t,z-az-dz*t);if(d<best){best=d;bi=i;bt=t}}return[best,bi,bt]}
 function __tyInLawn(x,z){const L=__TY.lawn,r=-L.r*Math.PI/180,dx=x-L.x,dz=z-L.z,u=dx*Math.cos(r)-dz*Math.sin(r),v=dx*Math.sin(r)+dz*Math.cos(r);return (u*u)/(L.a*L.a)+(v*v)/(L.b*L.b)<=1}
 function __tyInPoly(P,x,z){let c=!1;for(let i=0,j=P.length-1;i<P.length;j=i++){const a=P[i],b=P[j];if((a[1]>z)!==(b[1]>z)&&x<(b[0]-a[0])*(z-a[1])/(b[1]-a[1])+a[0])c=!c}return c}
-/* 地面の高さ (ギア配置・カメラ制限にも使用)。zone: 0台地 1護岸 2河川敷 3川 4対岸 5道路 6山側 7法面 */
+/* 地面の高さ (ギア配置・カメラ制限にも使用)。zone: 0台地 1護岸 2河川敷 3川 4対岸 5道路 6山側 7法面 8河川敷への道 */
 function __tyHZ(x,z){const A=__TY,sV=__tySD(A.riv,x,z);
  if(sV>A.rw)return[Math.min((sV-A.rw)*.9,40)-.3,4];
  if(sV>-A.rw)return[-.8,3];
  const sR=__tySD(A.road,x,z);
  if(sR<-3.5)return[A.RH+Math.min((-sR-3.5)*.8,45),6];
  if(sR<=3.5)return[A.RH,5];
+ const rp=__tyNear(A.ramp,x,z);if(rp[0]<A.rampW){const H=A.rampH;return[H[rp[1]]+(H[rp[1]+1]-H[rp[1]])*rp[2],8]}
  const sT=__tySD(A.lev,x,z);let h,zn;
  if(sT<=0){h=A.LH;zn=0}else if(sT>=A.LW){h=.02;zn=2}else{h=A.LH-Math.floor(sT/.8)*.35;zn=1}
  if(sR<10){const e=A.RH+(A.LH-A.RH)*(sR-3.5)/6.5;if(e>h){h=e;zn=7}}
@@ -5915,14 +5919,14 @@ function __tooiCamp(G,site){
  /* ---------- 地形 (高さ場 + 頂点カラー) ---------- */
  {const X0=-110,X1=310,Z0=-100,Z1=190,S=2,NX=Math.round((X1-X0)/S),NZ=Math.round((Z1-Z0)/S);
   const C={lawn:col('#6f9e3c'),lawn2:col('#83ad48'),plat:col('#8f8a5c'),park:col('#5d6166'),grav:col('#b8b2a6'),grav2:col('#a39d92'),
-   bed:col('#4d6f63'),hill:col('#2f5326'),hill2:col('#3d6a2c'),road:col('#4f5358'),slope:col('#5f8636'),lev:col('#a7a49b')};
+   bed:col('#4d6f63'),hill:col('#2f5326'),hill2:col('#3d6a2c'),road:col('#4f5358'),slope:col('#5f8636'),lev:col('#a7a49b'),ramp:col('#cbc7bc')};
   const pos=new Float32Array((NX+1)*(NZ+1)*3),cl=new Float32Array((NX+1)*(NZ+1)*3),idx=[];
   for(let j=0;j<=NZ;j++)for(let i=0;i<=NX;i++){const x=X0+i*S,z=Z0+j*S,k=(j*(NX+1)+i)*3;let[h,zn]=__tyHZ(x,z),c;
    const n=R();
    if(zn===1){h=A.LH*(1-__tySD(A.lev,x,z)/A.LW)-.45;c=C.lev}
    else if(zn===0){c=__tyInPoly(A.park,x,z)?C.park:__tyInLawn(x,z)?(n<.5?C.lawn:C.lawn2):C.plat}
    else if(zn===2)c=n<.5?C.grav:C.grav2;else if(zn===3)c=C.bed;else if(zn===4||zn===6){c=n<.5?C.hill:C.hill2;h+=n*.6}
-   else if(zn===5)c=C.road;else c=C.slope;
+   else if(zn===5)c=C.road;else if(zn===8)c=C.ramp;else c=C.slope;
    const eb=Math.min(x-X0,X1-x,z-Z0,Z1-z),fo=Math.min(1,Math.max(0,eb/40));if(zn===4||zn===6)h=h*fo-1.2*(1-fo);
    const f=.93+n*.1;pos[k]=x+ox;pos[k+1]=h;pos[k+2]=z+oz;cl[k]=c[0]*f;cl[k+1]=c[1]*f;cl[k+2]=c[2]*f}
   for(let j=0;j<NZ;j++)for(let i=0;i<NX;i++){const a=j*(NX+1)+i,b=a+1,c=a+NX+1,d=c+1;idx.push(a,c,b,b,c,d)}
@@ -5936,11 +5940,21 @@ function __tooiCamp(G,site){
    for(let s=0;s<10;s++){const h=A.LH-s*.35,o0=s*.8,o1=(s+1)*.8,h2=h-.35,
      a=[p0[0]+n0[0]*o0,h,p0[1]+n0[1]*o0],b=[p1[0]+n1[0]*o0,h,p1[1]+n1[1]*o0],c=[p1[0]+n1[0]*o1,h,p1[1]+n1[1]*o1],d=[p0[0]+n0[0]*o1,h,p0[1]+n0[1]*o1],
      e=[c[0],h2,c[2]],f=[d[0],h2,d[2]];
+    if(__tyNear(A.ramp,(a[0]+c[0])/2,(a[2]+c[2])/2)[0]<A.rampW+.4)continue;
     q([a,d,b,b,d,c],tr);q([d,f,c,c,f,e],ri2)}}
   const g=new Qi;g.setAttribute('position',new Y(pos,3));g.setAttribute('color',new Y(cl,3));g.computeVertexNormals();
   const m=new Z(g,new Q({vertexColors:!0,roughness:.9,side:2}));m.receiveShadow=!0;m.castShadow=!0;G.add(m);
   /* 天端の縁石 */
-  const cb=new Bo(new vo(P.filter((p,i)=>i%2===0).map(p=>new J(p[0]+ox,A.LH+.06,p[1]+oz))),400,.12,4,!1);G.add(new Z(cb,new Q({color:'#d6d3cb',roughness:.8})))}
+  const cm2=new Q({color:'#d6d3cb',roughness:.8});let run=[];const flush=()=>{if(run.length>2)G.add(new Z(new Bo(new vo(run),run.length*4,.12,4,!1),cm2));run=[]};
+  P.forEach((p,i)=>{if(i%2)return;if(__tyNear(A.ramp,p[0],p[1])[0]<A.rampW+.8){flush();return}run.push(new J(p[0]+ox,A.LH+.06,p[1]+oz))});flush();
+  /* 道の縁石 (護岸を横切る部分) */
+  [-1,1].forEach(sd=>{const pts=[];for(let i=3;i<A.ramp.length-1;i++)for(let k=0;k<6;k++){const a=A.ramp[i],b=A.ramp[i+1],t=k/6,x=a[0]+(b[0]-a[0])*t,z=a[1]+(b[1]-a[1])*t,l=Math.hypot(b[0]-a[0],b[1]-a[1]),nx=-(b[1]-a[1])/l*sd*(A.rampW+.15),nz=(b[0]-a[0])/l*sd*(A.rampW+.15);pts.push(new J(x+nx+ox,__tyH(x,z)+.12,z+nz+oz))}G.add(new Z(new Bo(new vo(pts),80,.1,4,!1),cm2))})}
+ /* ---------- 河川敷への道 (なめらかな路面) ---------- */
+ {const Rp=A.ramp,sm=[];for(let i=0;i<Rp.length-1;i++){const a=Rp[i],b=Rp[i+1],n=Math.max(1,Math.ceil(Math.hypot(b[0]-a[0],b[1]-a[1])));for(let k=0;k<n;k++){const t=k/n;sm.push([a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,A.rampH[i]+(A.rampH[i+1]-A.rampH[i])*t])}}const L=Rp[Rp.length-1];sm.push([L[0],L[1],A.rampH[A.rampH.length-1]]);
+  const pos=[],idx=[],uv=[];let acc=0;sm.forEach((p,i)=>{const a=sm[Math.max(0,i-1)],b=sm[Math.min(sm.length-1,i+1)],dx=b[0]-a[0],dz=b[1]-a[1],l=Math.hypot(dx,dz)||1,nx=-dz/l*A.rampW,nz=dx/l*A.rampW;if(i)acc+=Math.hypot(p[0]-sm[i-1][0],p[1]-sm[i-1][1]);pos.push(p[0]-nx+ox,p[2]+.07,p[1]-nz+oz,p[0]+nx+ox,p[2]+.07,p[1]+nz+oz);uv.push(0,acc/4,1,acc/4)});
+  for(let i=0;i<sm.length-1;i++){const a=i*2;idx.push(a,a+2,a+1,a+1,a+2,a+3)}
+  const g=new Qi;g.setAttribute('position',new Y(pos,3));g.setAttribute('uv',new Y(uv,2));g.setIndex(idx);g.computeVertexNormals();
+  const m=new Z(g,new Q({color:'#cfcbc1',roughness:.85,side:2}));m.receiveShadow=!0;G.add(m)}
  /* ---------- 有田川の水面 ---------- */
  {const Rv=A.riv,pos=[],idx=[];const sm=[];for(let i=0;i<Rv.length-1;i++){const a=Rv[i],b=Rv[i+1];for(let k=0;k<8;k++){const t=k/8;sm.push([a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t])}}sm.push(Rv[Rv.length-1]);
   sm.forEach((p,i)=>{const a=sm[Math.max(0,i-1)],b=sm[Math.min(sm.length-1,i+1)],dx=b[0]-a[0],dz=b[1]-a[1],l=Math.hypot(dx,dz)||1,nx=-dz/l,nz=dx/l,w=A.rw+.6;pos.push(p[0]-nx*w+ox,-.28,p[1]-nz*w+oz,p[0]+nx*w+ox,-.28,p[1]+nz*w+oz)});
@@ -5963,7 +5977,7 @@ function __tooiCamp(G,site){
   const sk=new Z(new eo(S.w*.8,.85,.8),cm);sk.position.set(0,.43,0);sk.castShadow=!0;g.add(sk);
   const sg=new Z(new Io(2.4,.6),new ua({map:__nkSign('炊事場',2.4,.6,'#14532d','#ffffff',40)}));sg.position.set(0,2.35,S.d/2+.12);g.add(sg)}
  /* ---------- トイレ棟 ---------- */
- {const T=A.toilet,g=new Xr;g.position.set(T.x+ox,A.LH,T.z+oz);g.rotation.y=-T.r*Math.PI/180;G.add(g);
+ {const T=A.toilet,g=new Xr;g.position.set(T.x+ox,__tyH(T.x,T.z),T.z+oz);g.rotation.y=-T.r*Math.PI/180;G.add(g);
   const w=new Z(new eo(T.w,2.6,T.d),new Q({color:'#e8e6df',roughness:.9}));w.position.y=1.3;w.castShadow=!0;w.receiveShadow=!0;g.add(w);
   const r=new Z(new no(Math.hypot(T.w,T.d)/2+.4,1.1,4),new Q({color:'#6b4a3a',roughness:.85}));r.rotation.y=Math.PI/4;r.scale.set(T.w/T.d,1,1);r.position.y=3.15;r.castShadow=!0;g.add(r);
   const sg=new Z(new Io(2,.55),new ua({map:__nkSign('トイレ',2,.55,'#1e3a8a','#ffffff',40)}));sg.position.set(0,2.2,T.d/2+.03);g.add(sg)}
@@ -6007,11 +6021,12 @@ function __ty2D(e,l,U){const A=__TY,W=e.width,D=e.depth,P=(x,z)=>`${x*l},${z*l}`
   (0,U.jsx)(`polygon`,{points:band(x=>__tyZ(A.riv,x)-A.rw,x=>__tyZ(A.riv,x)+A.rw),fill:`#2f7f86`,opacity:.95},`riv`),
   (0,U.jsx)(`polygon`,{points:band(x=>__tyZ(A.riv,x)+A.rw,x=>D),fill:`#24461d`,opacity:.95},`bank`),
   (0,U.jsx)(`polyline`,{points:xs.map(x=>P(x,cz(__tyZ(A.road,x)))).join(' '),fill:`none`,stroke:`#4f5358`,strokeWidth:7*l},`road`),
+  (0,U.jsx)(`polyline`,{points:A.ramp.map(p=>P(p[0],p[1])).join(' '),fill:`none`,stroke:`#cbc7bc`,strokeWidth:A.rampW*2*l,strokeLinejoin:`round`},`ramp`),
   (0,U.jsx)(`polygon`,{points:Pk.map(p=>P(p[0],p[1])).join(' '),fill:`#5d6166`,stroke:`#cbd5e1`,strokeWidth:1},`park`),...stripes,
   ...A.ev.map((t,i)=>(0,U.jsx)(`circle`,{cx:t[0]*l,cy:t[1]*l,r:t[2]*l,fill:`#14532d`,fillOpacity:.75,stroke:`#166534`},`ev${i}`)),
   box(A.shelter,`#4ade80`,`炊事場`,`sh`),box(A.toilet,`#e8e6df`,`トイレ`,`wc`),
   txt(L.x,L.z,`芝生サイト`,2.2,`#ecfccb`),txt(95,23,`駐車場 (約40台)`,1.8),txt(75,__tyZ(A.lev,75)+4.5,`階段護岸`,1.4,`#1f2937`),
-  txt(140,47,`河川敷サイト (砂利)`,2,`#fef3c7`),txt(60,__tyZ(A.riv,60)+1,`有田川`,2.2,`#cffafe`),txt(150,__tyZ(A.road,150)+1,`県道`,1.6)]})}
+  txt(140,47,`河川敷サイト (砂利)`,2,`#fef3c7`),txt(186,24,`河川敷への道`,1.4,`#f5f5f4`),txt(60,__tyZ(A.riv,60)+1,`有田川`,2.2,`#cffafe`),txt(150,__tyZ(A.road,150)+1,`県道`,1.6)]})}
 
 function __tent(G,it,tx,anim){
 const PI=Math.PI,Zr=-2.45,Zf=1.85;
