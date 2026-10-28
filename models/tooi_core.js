@@ -102,7 +102,7 @@ function __tooiCamp(G,site){
   A.ev.forEach(t=>tree(t[0],t[1],t[2]/4.2,mG));
   for(let x=22;x<=128;x+=9.5){const z=__tyZ(A.road,x)+6.5+R()*1.5;if(__tyInPoly(A.park,x,z+2))continue;tree(x,z,.62+R()*.15,mP)}}
  /* ---------- 山の森 (1メッシュに結合) ---------- */
- {const sph=new Ro(1,7,5),sp=sph.attributes.position.array,si=sph.index.array,pos=[],cl=[],idx=[],pal=['#2a4f22','#355f29','#24461d','#41702f','#2f5a24'].map(col);
+ {const sph=new Ro(1,6,4),sp=sph.attributes.position.array,si=sph.index.array,pos=[],cl=[],idx=[],pal=['#2a4f22','#355f29','#24461d','#41702f','#2f5a24'].map(col);
   for(let x=-80;x<=280;x+=6.5)for(let z=-70;z<=160;z+=6.5){const px=x+(R()-.5)*5,pz=z+(R()-.5)*5,[h,zn]=__tyHZ(px,pz);
    const near=(zn===6&&__tySD(A.road,px,pz)<-6)||(zn===4&&__tySD(A.riv,px,pz)>A.rw+3);if(!near)continue;
    const eb=Math.min(px+110,310-px,pz+100,190-pz),fo=Math.min(1,Math.max(0,eb/40));if(fo<.3)continue;const hh=h*fo-1.2*(1-fo);
@@ -110,7 +110,7 @@ function __tooiCamp(G,site){
    for(let k=0;k<sp.length;k+=3){pos.push(px+ox+sp[k]*r,hh+r*.9+sp[k+1]*r*1.25,pz+oz+sp[k+2]*r);const f=.85+.3*(sp[k+1]+1)/2;cl.push(c[0]*f,c[1]*f,c[2]*f)}
    for(let k=0;k<si.length;k++)idx.push(si[k]+b)}
   const g=new Qi;g.setAttribute('position',new Y(pos,3));g.setAttribute('color',new Y(cl,3));g.setIndex(idx);g.computeVertexNormals();
-  const m=new Z(g,new Q({vertexColors:!0,roughness:.9}));m.castShadow=!0;m.receiveShadow=!0;G.add(m)}
+  const m=new Z(g,new Q({vertexColors:!0,roughness:.9}));m.receiveShadow=!0;G.add(m)}
 }
 
 /* 2D平面図の重ね描き (サイト座標そのまま) */
