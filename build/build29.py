@@ -32,6 +32,12 @@ rep("P=[{id:`all`,label:`すべて (${j.length}点)`,icon:`⭐`},",
 rep("/* バイザー(跳ね上げたドアパネル)と2本のポール */\n {const vw=", "/* バイザー(跳ね上げたドアパネル)と2本のポール */\n if(!it.noVisor){const vw=")
 
 # (追加) 2D記号・追加時の属性は build 後に手作業で追記 (2026-10-29)
+# (追加) 新作の画像(3Dモデルのレンダリング build/c26_img/*.webp)と「すべて」タブへの表示
+import base64, glob, json, os
+m = {os.path.basename(f)[:-5]: 'data:image/webp;base64,' + base64.b64encode(open(f, 'rb').read()).decode() for f in sorted(glob.glob('build/c26_img/*.webp'))}
+b = b.replace("/* 新作のカラー", "const __C26IMG=" + json.dumps(m) + ";__C26.forEach(g=>{g.imageUrl=__C26IMG[g.id]});\n/* 新作のカラー", 1)
+b = b.replace("if(r===`c26`)t=!!e.isNew2026;else if(e.isNew2026)t=!1;", "if(r===`c26`)t=!!e.isNew2026;")
+b = b.replace("label:`すべて (${j.filter(x=>!x.isNew2026).length}点)`", "label:`すべて (${j.length}点)`")
 open('build/app26.js', 'w').write(b)
 open('mio_camp_simulator.html', 'w').write(h.replace(a, b))
 print('ok', len(b) - len(a))
