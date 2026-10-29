@@ -12,7 +12,7 @@ function __pykes(G,it,anim){
   const t=new Xa(c);t.wrapS=t.wrapT=ze;t.repeat.set(3,2);window.__pykesFab=t}
  const mFly=new Q({map:window.__pykesFab,color:'#e9bfae',roughness:.75,side:2}),mIn=new Q({color:'#d8d6d0',roughness:.9,side:2,transparent:!0,opacity:.92}),
   mFloor=new Q({color:'#3b3d42',roughness:.95}),mPole=new Q({color:'#2b2b2e',roughness:.5,metalness:.3}),mRed=new Q({color:'#c62828',roughness:.6}),
-  mVis=new Q({color:'#c9ae86',roughness:.8,side:2,emissive:'#4a3b28'}),mBlack=new Q({color:'#151517',roughness:.4,metalness:.6}),mLine=new ua({color:'#f5f5f4'});
+  mVis=new Q({map:window.__pykesFab,color:'#e9bfae',roughness:.75,side:2,emissive:'#3a2621'}),mBlack=new Q({color:'#151517',roughness:.4,metalness:.6}),mLine=new ua({color:'#f5f5f4'});
  /* 角の丸い四角ドーム: r=(|u|^4+|v|^4)^(1/4), y=H*sqrt(1-r^2) */
  const P=(u,v,s=1,off=0)=>{const r=Math.min(1,Math.pow(Math.pow(Math.abs(u),4)+Math.pow(Math.abs(v),4),.25)),y=H*s*Math.sqrt(Math.max(0,1-r*r));return[u*BW*s+Math.sign(u)*off*.3,y+off,zc+v*BD*s+Math.sign(v)*off*.3]};
  const dome=(s,mat,hole)=>{const N=44,pos=[],idx=[],uv=[];for(let j=0;j<=N;j++)for(let i=0;i<=N;i++){const u=i/N*2-1,v=j/N*2-1,p=P(u,v,s);pos.push(p[0],p[1],p[2]);uv.push(i/N,j/N)}
