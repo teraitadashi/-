@@ -31,7 +31,7 @@ function __pykes(G,it,anim){
  [[-1,-1],[1,-1],[1,1],[-1,1],[0,-1.04],[0,1.04]].forEach(([u,v])=>{const p=P(u*.99,v*.99,1,0),b=add(new eo(.05,.04,.05),mRed,!0);b.position.set(p[0],.03,p[2]);
   const pg=add(new to(.006,.006,.18,6),new Q({color:'#cbd5e1',metalness:.9,roughness:.2}));pg.position.set(p[0]*1.04,.06,zc+(p[2]-zc)*1.04)});
  /* バイザー(跳ね上げたドアパネル)と2本のポール */
- {const vw=.8*k,vz=zc+BD+Math.min(1.25,D-2*BD-.1),vy=1.12*k,NI=20,NJ=10,pos=[],idx=[],
+ if(!it.noVisor){const vw=.8*k,vz=zc+BD+Math.min(1.25,D-2*BD-.1),vy=1.12*k,NI=20,NJ=10,pos=[],idx=[],
    hinge=s=>{const u=s*.5,vv=1-.6*Math.sqrt(Math.max(0,1.1-Math.pow(Math.abs(u)/.52,2.2)));return P(u,Math.max(.41,vv),1,.014)};
   /* 付け根はドア開口の上辺 (ドーム面に沿う曲線)、先端は2本のポールで水平に張る */
   for(let j=0;j<=NJ;j++)for(let i=0;i<=NI;i++){const s=i/NI*2-1,t=j/NJ,B=hinge(s),Fx=s*vw*1.12,sag=.07*Math.sin(PI*t)*(1-.5*s*s)+.03*Math.sin(PI*(s+1)/2)*t;pos.push(B[0]+(Fx-B[0])*t,B[1]+(vy-B[1])*t-sag,B[2]+(vz-B[2])*t)}
