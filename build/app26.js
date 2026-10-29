@@ -6061,9 +6061,11 @@ function __pykes(G,it,anim){
  [[-1,-1],[1,-1],[1,1],[-1,1],[0,-1.04],[0,1.04]].forEach(([u,v])=>{const p=P(u*.99,v*.99,1,0),b=add(new eo(.05,.04,.05),mRed,!0);b.position.set(p[0],.03,p[2]);
   const pg=add(new to(.006,.006,.18,6),new Q({color:'#cbd5e1',metalness:.9,roughness:.2}));pg.position.set(p[0]*1.04,.06,zc+(p[2]-zc)*1.04)});
  /* バイザー(跳ね上げたドアパネル)と2本のポール */
- {const vw=.8*k,y0=H*.86,z0=zc+BD*.62,vz=z0+Math.min(1.25,D-2*BD-.1),vy=1.18*k,pos=[],idx=[];
-  for(let j=0;j<=8;j++)for(let i=0;i<=10;i++){const s=i/10*2-1,t=j/8,x=s*vw*(1+.12*t),y=y0+(vy-y0)*t-.05*Math.sin(PI*t)*(1-s*s*.4),z=z0+(vz-z0)*t;pos.push(x,y,z)}
-  for(let j=0;j<8;j++)for(let i=0;i<10;i++){const a=j*11+i,b=a+1,c=a+11,d=c+1;idx.push(a,c,b,b,c,d)}
+ {const vw=.8*k,vz=zc+BD+Math.min(1.25,D-2*BD-.1),vy=1.12*k,NI=20,NJ=10,pos=[],idx=[],
+   hinge=s=>{const u=s*.5,vv=1-.6*Math.sqrt(Math.max(0,1.1-Math.pow(Math.abs(u)/.52,2.2)));return P(u,Math.max(.41,vv),1,.014)};
+  /* 付け根はドア開口の上辺 (ドーム面に沿う曲線)、先端は2本のポールで水平に張る */
+  for(let j=0;j<=NJ;j++)for(let i=0;i<=NI;i++){const s=i/NI*2-1,t=j/NJ,B=hinge(s),Fx=s*vw*1.12,sag=.07*Math.sin(PI*t)*(1-.5*s*s)+.03*Math.sin(PI*(s+1)/2)*t;pos.push(B[0]+(Fx-B[0])*t,B[1]+(vy-B[1])*t-sag,B[2]+(vz-B[2])*t)}
+  for(let j=0;j<NJ;j++)for(let i=0;i<NI;i++){const a=j*(NI+1)+i,b=a+1,c=a+NI+1,d=c+1;idx.push(a,c,b,b,c,d)}
   const g=new Qi;g.setAttribute('position',new Y(pos,3));g.setIndex(idx);g.computeVertexNormals();add(g,mVis,!0,!0);
   [-1,1].forEach(sd=>{const x=sd*vw*1.12,p=add(new to(.011,.011,vy+.06,8),mBlack,!0);p.position.set(x,(vy+.06)/2,vz);
    const cap=add(new Ro(.022,8,6),mBlack);cap.position.set(x,vy+.07,vz);
