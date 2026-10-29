@@ -1,11 +1,7 @@
 /* ===== Coleman 2026年 新作ギア (2026年10月 Web調査) =====
    レイアウトに置くギアのうち、使用時サイズを確認できたもの。isNew2026 でギア追加画面の「Coleman 2026新作」タブに出る。
    cat3d: 3Dは同じ種類の既存モデルを新作の寸法に伸縮して表示 (mdx=2ルーム / dome=ドーム / shade=インスタントシェード / popup=ポップアップシェード / chair / cooler) */
-const __C26=[
- {id:'c26-flat-table-60',name:'コールマン フラットテーブル/60 (ブラック)',manufacturer:'コールマン (Coleman)',productName:'フラットテーブル/60',category:'furniture',shapeType:'furn_table',width:.6,depth:.42,height:.4,ropeMargin:0,color:'#2b2b2e',isNew2026:!0,
-  description:'2026年新作の薄型テーブル。天板の一部を外してデュアルガスバーナーストーブを組み込める。使用時 約60×42×30/40(h)cm、収納時 厚さ約4cm、重量 約1.8〜2.2kg、希望小売価格 10,230円。',weight:'約1.8〜2.2 kg'},
- {id:'c26-dual-gas-burner',name:'コールマン デュアルガスバーナーストーブ',manufacturer:'コールマン (Coleman)',productName:'デュアルガスバーナーストーブ',category:'furniture',shapeType:'c26_stove',width:.425,depth:.315,height:.18,ropeMargin:0,color:'#2b2d31',isNew2026:!0,
-  description:'2026年新作。OD缶・CB缶の両方が使えるフラットなツーバーナー。フラットテーブル/60に組み込める。サイズ 約42.5×31.5×18(h)cm、収納 約36×31×8cm、重量 約2.2kg。',packedSize:'約36 × 31 × 8 cm',weight:'約2.2 kg'}];
+const __C26=[];
 /* 新作のカラー (色が確認できたもの。ui:0 は色ボタンを出さずに表示色だけ合わせる) */
 Object.assign(__CV,{
  'c26-tough-speed-dome':{base:'#e4e8ee',t:['f0f3f7','e4e8ee','e6e9ee'],al:1,v:[['ベージュ','#cdbb9c'],['グレー (アルペン限定)','#8e9296']]},
