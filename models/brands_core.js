@@ -20,7 +20,25 @@ const __CBR=[
  {id:'br-captainstag-trine-tripod-ug10',mk3d:'tripod',name:'キャプテンスタッグ トライン 焚き火三脚 (UG-10)',manufacturer:'キャプテンスタッグ (CAPTAIN STAG)',productName:'トライン 焚き火三脚',modelNumber:'UG-10',category:'furniture',width:.7,depth:.6,height:1.435,ropeMargin:0,color:'#1d1e21',
   description:'焚き火の上に立ててチェーンで鍋を吊るす三脚。約70×60×143.5(h)cm、重量 約2.4kg、耐荷重 約20kg。',weight:'約2.4 kg'},
  {id:'br-honma-asw-60b-stove',mk3d:'woodstove',name:'ホンマ製作所 黒耐熱窓付時計型ストーブ (ASW-60B)',manufacturer:'ホンマ製作所',productName:'黒耐熱窓付時計型ストーブ',modelNumber:'ASW-60B',category:'furniture',width:.4,depth:.6,height:.4,ropeMargin:0,color:'#1b1b1d',
-  description:'耐熱窓付きの時計型薪ストーブ。本体 約40×60×40(h)cm、重量 約6.7kg、煙突径106mm(背面)。3Dの煙突(約2m)は別売の煙突を立てた想定。',weight:'約6.7 kg'}];
+  description:'耐熱窓付きの時計型薪ストーブ。本体 約40×60×40(h)cm、重量 約6.7kg、煙突径106mm(背面)。3Dの煙突(約2m)は別売の煙突を立てた想定。',weight:'約6.7 kg'},
+ {id:'br-helinox-chair-one',mk3d:'chairone',name:'ヘリノックス チェアワン',manufacturer:'ヘリノックス (Helinox)',productName:'チェアワン',category:'furniture',width:.52,depth:.5,height:.66,ropeMargin:0,color:'#1f2124',
+  description:'超軽量の組み立て式チェア。使用時 約52×50×66(h)cm、座面高 約34cm、重量 約890g、耐荷重145kg。',weight:'約0.89 kg'},
+ {id:'br-snowpeak-low-chair-30',mk3d:'lowchair30',name:'スノーピーク ローチェア30 (LV-091)',manufacturer:'スノーピーク (snow peak)',productName:'ローチェア30',modelNumber:'LV-091',category:'furniture',width:.58,depth:.65,height:.86,ropeMargin:0,color:'#5b5a3f',
+  description:'竹集成材のアームレストとハイバックのローチェア。使用時 約58×65×86(h)cm、座面高 約30cm、重量 約3.6kg。',weight:'約3.6 kg'},
+ {id:'br-coleman-resort-chair',mk3d:'resortchair',name:'コールマン リゾートチェア',manufacturer:'コールマン (Coleman)',productName:'リゾートチェア',category:'furniture',width:.51,depth:.83,height:.87,ropeMargin:0,color:'#1f3355',
+  description:'寝そべれるリクライニングチェア。使用時 約83×51×87(h)cm、収納 約14×14×87cm、重量 約3kg。',weight:'約3 kg'},
+ {id:'br-snowpeak-igt-slim',mk3d:'igt',name:'スノーピーク IGTスリム (CK-180) テーブル',manufacturer:'スノーピーク (snow peak)',productName:'IGTスリム',modelNumber:'CK-180',category:'furniture',width:.94,depth:.408,height:.403,ropeMargin:0,color:'#b48a5c',
+  description:'アイアングリルテーブルのスリム版。天然木の天板は6分割で収納。約94×40.8×40.3(h)cm、重量 約7.4kg。',weight:'約7.4 kg'},
+ {id:'br-helinox-table-one-hardtop',mk3d:'tableone',name:'ヘリノックス テーブルワン ハードトップ',manufacturer:'ヘリノックス (Helinox)',productName:'テーブルワン ハードトップ',category:'furniture',width:.59,depth:.4,height:.38,ropeMargin:0,color:'#c4a77a',
+  description:'ショックコードのフレームに硬い天板を載せる軽量テーブル。使用時 約59×40×38(h)cm、重量 約816g、耐荷重50kg。',weight:'約0.82 kg'},
+ {id:'br-uniflame-takibi-table',mk3d:'takibitable',name:'ユニフレーム 焚き火テーブル (682104)',manufacturer:'ユニフレーム (UNIFLAME)',productName:'焚き火テーブル',modelNumber:'682104',category:'furniture',width:.55,depth:.35,height:.37,ropeMargin:0,color:'#c9ced3',
+  description:'熱い鍋も置けるステンレス天板と天然木サイドのテーブル。使用時 約55×35×37(h)cm、収納時の厚さ約2.5cm、重量 約2.3kg、耐荷重 約50kg。',weight:'約2.3 kg'},
+ {id:'br-coleman-powerhouse-lp-2burner',mk3d:'twoburner',name:'コールマン パワーハウスLPツーバーナーストーブII',manufacturer:'コールマン (Coleman)',productName:'パワーハウスLPツーバーナーストーブII',category:'furniture',width:.64,depth:.325,height:.52,ropeMargin:0,color:'#2e6b3d',
+  description:'定番のツーバーナー(コンロ)。使用時 約64×32.5×52(h)cm(フタと風防を立てた状態)、収納 約54×32.5×7cm、重量 約4.2kg。',weight:'約4.2 kg'},
+ {id:'br-iwatani-tafumaru-jr',mk3d:'cassette',name:'イワタニ カセットフー タフまるJr. (カセットコンロ)',manufacturer:'イワタニ (Iwatani)',productName:'カセットフー タフまるJr.',category:'furniture',width:.286,depth:.1925,height:.122,ropeMargin:0,color:'#2b2c2f',
+  description:'風に強い防風構造のコンパクトなカセットコンロ。約28.6×19.25×12.2(h)cm、重量 約1.6kg(ケース込み 約2.5kg)。',weight:'約1.6 kg'},
+ {id:'br-uniflame-fire-grill',mk3d:'firegrill',name:'ユニフレーム ファイアグリル (焚火台・グリル)',manufacturer:'ユニフレーム (UNIFLAME)',productName:'ファイアグリル',category:'furniture',width:.43,depth:.43,height:.33,ropeMargin:0,color:'#c9ced3',
+  description:'焚き火もBBQもできる定番の焚き火台グリル。使用時 約43×43×33(h)cm、収納 約38×38×7cm。',packedSize:'約38 × 38 × 7 cm'}];
 __CBR.forEach(g=>{g.isBrand=!0;g.genSym=!0;g.shapeType='br_'+g.mk3d});
 Object.assign(__CV,{
  'br-ddhammocks-dd-tarp-3x3':{base:'#5a6142',t:['5a6142'],al:1,v:[['オリーブグリーン','#5a6142'],['コヨーテブラウン','#8b6b4a'],['ジェットブラック','#1d1e21']]}});
@@ -110,5 +128,61 @@ function __mk3d(G,it){const PI=Math.PI,add=(geo,mat,cast)=>{const m=new Z(geo,ma
   const fr=add(new eo(W*.66,bh*.52,.01),mS);fr.position.set(0,H-bh*.86*.5,hz-.002);
   const CH=2.1,fl=add(new to(.053,.053,CH-H,16),mSt,!0);fl.position.set(0,H+(CH-H)/2,-hz*.75);
   const tc=add(new to(.11,.11,.08,16),mSt);tc.position.set(0,CH+.05,-hz*.75);const tc2=add(new no(.13,.07,16),mSt);tc2.position.set(0,CH+.12,-hz*.75);
+ }else if(k==='chairone'){ /* チェアワン: ハブから伸びる黒いアルミ脚、前後の弓形フレーム、袋状のシート */
+  const hx=W/2,hz=D/2,mA=new Q({color:'#1c1d20',metalness:.6,roughness:.4}),mF=fab(it.color||'#1f2124'),sh=.34,tb=(a,b,r=.009)=>add(new Bo(new vo(a.map(p=>new J(...p))),24,r,6,!1),mA,!0);
+  [-1,1].forEach(sx=>{tb([[sx*hx*.95,0,hz*.85],[sx*hx*.55,sh*.6,hz*.1],[sx*hx*.4,sh,-hz*.1]]);tb([[sx*hx*.95,0,-hz*.85],[sx*hx*.55,sh*.55,-hz*.15],[sx*hx*.4,sh*.9,-hz*.1]]);
+   tb([[sx*hx*.4,sh,-hz*.1],[sx*hx*.55,sh+.02,hz*.55]]);tb([[sx*hx*.4,sh*.9,-hz*.1],[sx*hx*.55,H*.75,-hz*.75],[sx*hx*.5,H,-hz*.85]])});
+  const pos=[],NU=10,NV=14,Pt=(u,v)=>{const x=(u-.5)*W*.95*(1-.15*Math.sin(PI*v)),z=v<.5?hz*.55-(v/.5)*hz*.6:-hz*.05-((v-.5)/.5)*hz*.8,y=v<.5?sh-.06*Math.sin(PI*v/.5)*(1-Math.pow(2*u-1,2)):sh+((v-.5)/.5)*(H-sh)-.03*Math.sin(PI*(v-.5)/.5);return[x,y,z]};
+  for(let i=0;i<NU;i++)for(let j=0;j<NV;j++){const a=Pt(i/NU,j/NV),b=Pt((i+1)/NU,j/NV),c=Pt((i+1)/NU,(j+1)/NV),d=Pt(i/NU,(j+1)/NV);pos.push(a,b,c,a,c,d)}tri(pos,mF,!0);
+ }else if(k==='lowchair30'){ /* ローチェア30: 木のアームレスト、ハイバックの帆布、X字の脚 */
+  const hx=W/2,hz=D/2,mA=new Q({color:'#c9ced3',metalness:.8,roughness:.3}),mWd=new Q({color:'#b5895a',roughness:.75}),mF=fab(it.color||'#5b5a3f'),sh=.3;
+  [-1,1].forEach(sx=>{const arm=add(new eo(.05,.025,D*.85),mWd,!0);arm.position.set(sx*hx*.95,.48,hz*.05);
+   [[[sx*hx*.9,0,hz*.85],[sx*hx*.9,.48,-hz*.6]],[[sx*hx*.9,0,-hz*.7],[sx*hx*.9,.48,hz*.7]],[[sx*hx*.9,.2,-hz*.6],[sx*hx*.9,H,-hz*.95]]].forEach(([a,b])=>{const A=new J(...a),B=new J(...b),m=add(new to(.011,.011,A.distanceTo(B),8),mA,!0);m.position.copy(A).add(B).multiplyScalar(.5);m.quaternion.setFromUnitVectors(new J(0,1,0),B.clone().sub(A).normalize())})});
+  const seat=add(new eo(W*.82,.02,D*.55),mF,!0);seat.position.set(0,sh,hz*.1);seat.rotation.x=-.08;
+  const back=add(new eo(W*.82,H-sh-.05,.02),mF,!0);back.position.set(0,sh+(H-sh)/2,-hz*.72);back.rotation.x=-.2;
+ }else if(k==='resortchair'){ /* リゾートチェア: 寝そべれる角度の背もたれ、低い座面、アームレスト */
+  const hx=W/2,hz=D/2,mA=new Q({color:'#2b2b2e',metalness:.6,roughness:.4}),mF=fab(it.color||'#1f3355'),mWd=new Q({color:'#9a7350',roughness:.75});
+  const pos=[],NU=8,NV=16,Pt=(u,v)=>{const x=(u-.5)*W*.85,z=hz*.9-v*D*.95,y=v<.45?.28+.04*(v/.45)-.04*Math.sin(PI*v/.45):.32+(v-.45)/.55*(H-.32);return[x,y-.03*(1-Math.pow(2*u-1,2)),z-(v>.45?(v-.45)*.05:0)]};
+  for(let i=0;i<NU;i++)for(let j=0;j<NV;j++){const a=Pt(i/NU,j/NV),b=Pt((i+1)/NU,j/NV),c=Pt((i+1)/NU,(j+1)/NV),d=Pt(i/NU,(j+1)/NV);pos.push(a,b,c,a,c,d)}tri(pos,mF,!0);
+  [-1,1].forEach(sx=>{const side=[[sx*hx,0,hz*.9],[sx*hx,.3,hz*.75],[sx*hx,.32,-hz*.05],[sx*hx,H,-hz*.95]];add(new Bo(new vo(side.map(p=>new J(...p))),30,.011,6,!1),mA,!0);
+   const leg=[[sx*hx,0,-hz*.9],[sx*hx,.42,-hz*.1]];const A=new J(...leg[0]),B=new J(...leg[1]),m=add(new to(.011,.011,A.distanceTo(B),8),mA,!0);m.position.copy(A).add(B).multiplyScalar(.5);m.quaternion.setFromUnitVectors(new J(0,1,0),B.clone().sub(A).normalize());
+   const arm=add(new eo(.05,.025,D*.45),mWd,!0);arm.position.set(sx*hx*1.02,.45,0)});
+ }else if(k==='igt'){ /* IGTスリム: 黒いスチールフレームと脚、天然木の天板6枚 */
+  const hx=W/2,hz=D/2,mS=new Q({color:'#2a2b2e',metalness:.6,roughness:.45}),mW1=new Q({color:'#b48a5c',roughness:.7}),mW2=new Q({color:'#a77c50',roughness:.7});
+  [-1,1].forEach(sz=>{const r=add(new eo(W,.03,.03),mS,!0);r.position.set(0,H-.015,sz*(hz-.015))});[-1,1].forEach(sx=>{const r=add(new eo(.03,.03,D),mS,!0);r.position.set(sx*(hx-.015),H-.015,0)});
+  for(let i=0;i<6;i++){const sw=(W-.06)/6,b=add(new eo(sw-.004,.018,D-.06),i%2?mW1:mW2,!0);b.position.set(-hx+.03+sw*(i+.5),H-.003,0)}
+  [-1,1].forEach(sx=>[-1,1].forEach(sz=>{const l=add(new to(.011,.011,H-.03,8),mS,!0);l.position.set(sx*(hx-.05),(H-.03)/2,sz*(hz-.05))}));
+  [-1,1].forEach(sx=>{const b=add(new eo(.02,.02,D-.1),mS);b.position.set(sx*(hx-.05),.08,0)});
+ }else if(k==='tableone'){ /* テーブルワン: X字に交差するアルミ脚と硬い天板 */
+  const hx=W/2,hz=D/2,mA=new Q({color:'#1c1d20',metalness:.6,roughness:.4}),mT=new Q({color:it.color||'#c4a77a',roughness:.75});
+  const top=add(new eo(W,.012,D),mT,!0);top.position.y=H;
+  [-1,1].forEach(sz=>[-1,1].forEach(sx=>{const A=new J(sx*hx*.9,0,sz*hz*.75),B=new J(-sx*hx*.55,H-.01,sz*hz*.7),m=add(new to(.009,.009,A.distanceTo(B),8),mA,!0);m.position.copy(A).add(B).multiplyScalar(.5);m.quaternion.setFromUnitVectors(new J(0,1,0),B.clone().sub(A).normalize())}));
+  const hub=add(new to(.02,.02,D*.95,10),mA);hub.rotation.x=PI/2;hub.position.y=H*.55;
+ }else if(k==='takibitable'){ /* 焚き火テーブル: エンボスのステンレス天板、天然木のサイド、U字のステンレス脚 */
+  const hx=W/2,hz=D/2,mS=new Q({color:'#d8dcdf',metalness:.35,roughness:.4}),mWd=new Q({color:'#a8794c',roughness:.75});
+  const top=add(new eo(W*.84,.012,D),mS,!0);top.position.y=H;[-1,1].forEach(sx=>{const s=add(new eo(W*.08,.025,D),mWd,!0);s.position.set(sx*(hx-W*.04),H,0)});
+  [-1,1].forEach(sx=>{const pts=[new J(sx*hx*.75,H-.01,-hz*.85),new J(sx*hx*.75,.01,-hz*.85),new J(sx*hx*.75,.01,hz*.85),new J(sx*hx*.75,H-.01,hz*.85)];add(new Bo(new vo(pts,!1,'catmullrom',.02),40,.008,6,!1),mS,!0)});
+ }else if(k==='twoburner'){ /* ツーバーナー: 緑の本体、立てたフタと左右の風防、バーナー2口と五徳 */
+  const hx=W/2,hz=D/2,bh=.11,mG=new Q({color:'#2e6b3d',roughness:.5,metalness:.3}),mS=new Q({color:'#c9ced3',metalness:.85,roughness:.3}),mK=new Q({color:'#151517',roughness:.6});
+  const body=add(new eo(W*.85,bh,D),mG,!0);body.position.y=bh/2+.01;
+  const lid=add(new eo(W*.85,H-bh,.012),mG,!0);lid.position.set(0,bh+(H-bh)/2,-hz);
+  [-1,1].forEach(sx=>{const w=add(new eo(.012,(H-bh)*.55,D*.9),mG,!0);w.position.set(sx*hx*.85,bh+(H-bh)*.27,0)});
+  const pan=add(new eo(W*.82,.004,D*.9),mS);pan.position.y=bh+.012;
+  [-1,1].forEach(sx=>{const b=add(new to(.045,.05,.02,16),mK);b.position.set(sx*W*.2,bh+.02,0);const r=add(new zo(.07,.004,6,18),mK);r.rotation.x=PI/2;r.position.set(sx*W*.2,bh+.045,0)});
+  const tank=add(new to(.035,.035,.12,12),new Q({color:'#f2c200',roughness:.5}));tank.rotation.z=PI/2;tank.position.set(hx*1.05,bh*.6,0);
+ }else if(k==='cassette'){ /* カセットコンロ: 低い箱形の本体、防風リング、五徳、つまみ */
+  const hx=W/2,hz=D/2,mB=new Q({color:'#2b2c2f',roughness:.5,metalness:.3}),mS=new Q({color:'#c9ced3',metalness:.85,roughness:.3});
+  const body=add(new eo(W,H*.55,D),mB,!0);body.position.y=H*.275;const top=add(new eo(W*.96,.004,D*.96),mS);top.position.y=H*.55;
+  const ring=add(new to(.075,.075,H*.35,20,1,!0),mS,!0);ring.position.set(hx*.2,H*.55+H*.175,0);
+  for(let i=0;i<4;i++){const a=i*PI/2,g=add(new eo(.05,.012,.008),new Q({color:'#151517'}));g.rotation.y=a;g.position.set(hx*.2+Math.cos(a)*.06,H*.92,Math.sin(a)*.06)}
+  const kn=add(new to(.012,.012,.02,12),new Q({color:'#c62828'}));kn.rotation.x=PI/2;kn.position.set(-hx*.7,H*.3,hz+.01);
+ }else if(k==='firegrill'){ /* ファイアグリル: 四角いステンレスの炉、4本脚、炭と炎、焼き網 */
+  const hx=W/2,hz=D/2,mS=new Q({color:'#d8dcdf',metalness:.35,roughness:.4}),fh=H*.45,by=H-fh*.9;
+  const pan=add(new eo(W*.8,.01,D*.8),mS,!0);pan.position.y=by;
+  [[0,1],[0,-1],[1,0],[-1,0]].forEach(([sx,sz])=>{const w=add(new eo(sx?.01:W*.8,fh,sz?.01:D*.8),mS,!0);w.position.set(sx*W*.4,by+fh/2,sz*D*.4);if(sx)w.rotation.z=sx*.25;else w.rotation.x=-sz*.25})
+  ;[-1,1].forEach(sx=>[-1,1].forEach(sz=>{const A=new J(sx*hx,0,sz*hz),B=new J(sx*W*.38,by,sz*D*.38),m=add(new to(.008,.008,A.distanceTo(B),8),mS,!0);m.position.copy(A).add(B).multiplyScalar(.5);m.quaternion.setFromUnitVectors(new J(0,1,0),B.clone().sub(A).normalize())}));
+  const coal=add(new eo(W*.55,.04,D*.55),new Q({color:'#2a1a12',emissive:'#7a2a0a',roughness:.9}));coal.position.y=by+.03;
+  const fl=add(new no(.08,.16,10),new ua({color:'#ff8a2a',transparent:!0,opacity:.85}));fl.position.y=by+.13;
+  const net=add(new eo(W*.95,.006,D*.95),new Q({color:'#9aa0a6',metalness:.8,roughness:.4,wireframe:!0}));net.position.y=H;
  }
 }

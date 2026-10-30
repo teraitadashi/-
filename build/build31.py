@@ -25,6 +25,8 @@ rep("description:e.isNew2026||e.genSym?e.description:void 0};", "description:e.i
 rep("let j=[...s,...y,...__C26,...__CPOP],M=j.filter(", "let j=[...s,...y,...__C26,...__CPOP,...__CBR],M=j.filter(")
 rep("if(r===`cpop`)t=!!e.isPopular;return t&&n}", "if(r===`cpop`)t=!!e.isPopular;if(r===`cbr`)t=!!e.isBrand;return t&&n}")
 rep("P=[{id:`all`,label:`すべて (${j.length}点)`,icon:`⭐`},", "P=[{id:`all`,label:`すべて (${j.length}点)`,icon:`⭐`},{id:`cbr`,label:`有名メーカー (${__CBR.length})`,icon:`🏕️`},")
+# ギア追加の分類: コンロ類・テーブル類も各タブに
+b = b.replace("r===`fire_cook`?t=e.name.includes(`剛炎`)||e.name.includes(`グリル`)||e.name.includes(`焚火`)", "r===`fire_cook`?t=e.name.includes(`剛炎`)||e.name.includes(`グリル`)||e.name.includes(`焚火`)||e.name.includes(`バーナー`)||e.name.includes(`コンロ`)||e.name.includes(`ストーブ`)||e.name.includes(`三脚`)", 1)
 open('build/app26.js', 'w').write(b)
 open('mio_camp_simulator.html', 'w').write(h.replace(a, b))
 print('ok', len(b) - len(a), 'images', len(m))
