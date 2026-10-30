@@ -6,7 +6,7 @@ function __slimLayout(site,items){return{site:__slim(site),items:(items||[]).map
 function __fatLayout(site,items){const cat=[...y,...__CBR,...__C26,...__CPOP],S=b.find(x=>x.name===site.name);
  return{site:S&&S.imageUrl&&!site.imageUrl?{...site,imageUrl:S.imageUrl}:site,
   items:(items||[]).map(it=>{if(it.imageUrl)return it;const p=cat.find(g=>g.id===it.presetId)||cat.find(g=>g.name===it.name);return p&&p.imageUrl?{...it,imageUrl:p.imageUrl}:it})}}
-function __saveLS(key,val){try{localStorage.setItem(key,JSON.stringify(val));return!0}catch(e){alert('保存できませんでした。端末の保存容量がいっぱいか、この開き方では保存が使えません。\n(ファイルアプリのプレビューではなく Safari で開くか、不要なレイアウトを削除してください)');return!1}}
+function __saveLS(key,val){__idbSet(key,val);try{localStorage.setItem(key,JSON.stringify(val));return!0}catch(e){if(window.indexedDB)return!0;alert('保存できませんでした。端末の保存容量がいっぱいか、この開き方では保存が使えません。\n(ファイルアプリのプレビューではなく Safari で開くか、不要なレイアウトを削除してください)');return!1}}
 /* テキストでのバックアップ (Koder などのアプリ内ブラウザでは保存データが残らないことがあるため) */
 function __copyText(t){const done=()=>alert('コピーしました。メモアプリなどに貼り付けて保管してください。');
  const fb=()=>{const ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.focus();ta.select();ta.setSelectionRange(0,t.length);let ok=!1;try{ok=document.execCommand('copy')}catch{}ta.remove();ok?done():prompt('自動コピーできませんでした。下の文字をすべて選択してコピーしてください。',t)};
@@ -15,3 +15,13 @@ function __exportLayouts(list){return 'MIOCAMP1:'+btoa(unescape(encodeURICompone
 function __importLayouts(txt,cur){const s=(txt||'').trim().replace(/^MIOCAMP1:/,'');let v;try{v=JSON.parse(decodeURIComponent(escape(atob(s))))}catch{try{v=JSON.parse(txt)}catch{return null}}
  if(!Array.isArray(v))v=[v];v=v.filter(x=>x&&x.site&&Array.isArray(x.items)).map(x=>({...x,...__slimLayout(x.site,x.items),id:x.id||`layout-${Date.now()}-${Math.random().toString(36).slice(2,6)}`}));
  const ids=new Set(v.map(x=>x.id));return[...v,...cur.filter(x=>!ids.has(x.id))]}
+/* Koder などで閉じると localStorage が消える場合に備え、IndexedDB にも同じ内容を残す (どちらかが残っていれば読み戻す) */
+function __idb(){return new Promise((ok,ng)=>{try{const q=indexedDB.open('miocamp',1);q.onupgradeneeded=()=>q.result.createObjectStore('kv');q.onsuccess=()=>ok(q.result);q.onerror=()=>ng(q.error)}catch(e){ng(e)}})}
+function __idbSet(k,v){__idb().then(d=>{const t=d.transaction('kv','readwrite');t.objectStore('kv').put(v,k)}).catch(()=>{});try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch{}}
+function __idbGet(k){return __idb().then(d=>new Promise(ok=>{const r=d.transaction('kv').objectStore('kv').get(k);r.onsuccess=()=>ok(r.result);r.onerror=()=>ok(null)})).catch(()=>null)}
+/* ファイルでのバックアップ: 共有シート (「ファイルに保存」) → ダウンロード → コピーの順に試す */
+function __saveFile(list){const t=__exportLayouts(list),nm=`miocamp_backup_${new Date().toISOString().slice(0,10)}.txt`;
+ try{const f=new File([t],nm,{type:'text/plain'});if(navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f],title:nm}).catch(e=>{e&&e.name!=='AbortError'&&__copyText(t)});return}}catch{}
+ try{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/plain'}));a.download=nm;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>alert('ファイルが保存されなかった場合は、もう一度「すべてコピー」でメモに残してください。'),800)}catch{__copyText(t)}}
+function __openFile(cb){const i=document.createElement('input');i.type='file';i.accept='.txt,.json,text/plain,application/json';i.style.display='none';
+ i.onchange=()=>{const f=i.files&&i.files[0];if(f){const r=new FileReader;r.onload=()=>cb(String(r.result||''));r.readAsText(f)}i.remove()};document.body.appendChild(i);i.click()}
