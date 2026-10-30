@@ -4,7 +4,7 @@
 function __mergeStatic(root,skip){
  root.updateMatrixWorld(!0);const inv=new Sr().copy(root.matrixWorld).invert(),B=new Map,kill=[];
  root.traverse(o=>{if(!o.isMesh||o.isInstancedMesh||Array.isArray(o.material)||skip&&skip.has(o)||o.userData.noMerge)return;
-  const g=o.geometry;if(!g||!g.attributes.position)return;const m=o.material,key=m.uuid+'|'+(o.castShadow?1:0)+(o.receiveShadow?1:0)+'|'+(g.attributes.uv?1:0)+(g.attributes.color?1:0);
+  const g=o.geometry;if(!g||!g.attributes.position)return;const m=o.material,key=__mKey(m)+'|'+(o.castShadow?1:0)+(o.receiveShadow?1:0)+'|'+(g.attributes.uv?1:0)+(g.attributes.color?1:0);
   if(!B.has(key))B.set(key,[]);B.get(key).push(o)});
  B.forEach(list=>{if(list.length<2)return;const P=[],N=[],U=[],C=[],o0=list[0],hasUV=!!o0.geometry.attributes.uv,hasC=!!o0.geometry.attributes.color;
   list.forEach(o=>{let g=o.geometry.index?o.geometry.toNonIndexed():o.geometry.clone();if(!g.attributes.normal)g.computeVertexNormals();g.applyMatrix4(new Sr().multiplyMatrices(inv,o.matrixWorld));
