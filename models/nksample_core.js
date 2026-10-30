@@ -19,7 +19,7 @@ function __nkSample(){
    at('my-sp-goen-gs1000',0,2.19,0);at('my-coleman-dutch-oven-10',0,2.19,0);
    at('my-coleman-healing-chair-hb',-.68,.56,-35);at('my-coleman-healing-chair-mesh',.6,.37,35);
    at('my-sp-takibitai-ll',.29,3.56,0);
-   put('my-suzuki-mrwagon',3.8,3,0);return}
+   put('my-suzuki-mrwagon',3.8,3,180);Object.assign(out[out.length-1],{colorName:'パールホワイト',color:'#f4f5f4'});return}
   /* テント (各区画に必ず1張) */
   const t=s.n===1?tents[0]:pick(tents);put(t[0],t[1],t[2],0);
   /* 車は駐車枠の中央 */
