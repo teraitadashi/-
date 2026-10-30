@@ -12,7 +12,15 @@ const __CBR=[
  {id:'br-snowpeak-pile-driver',mk3d:'piledriver',name:'スノーピーク パイルドライバー (LT-004)',manufacturer:'スノーピーク (snow peak)',productName:'パイルドライバー',modelNumber:'LT-004',category:'furniture',width:.25,depth:.25,height:2,ropeMargin:0,color:'#c9ced3',
   description:'地面に打ち込んで立てるランタンスタンド。収納時 約110cm〜最大 約240cm(ここでは約2m)、重量 約1.6〜1.7kg、クロームメッキスチール。',weight:'約1.7 kg'},
  {id:'br-stanley-water-jug-75',mk3d:'jug',name:'スタンレー ウォータージャグ 7.5L',manufacturer:'スタンレー (STANLEY)',productName:'ウォータージャグ 7.5L',category:'furniture',width:.297,depth:.297,height:.343,ropeMargin:0,color:'#3d6b4a',
-  description:'保冷ウォータージャグ。約Φ29.7×34.3(h)cm、容量 7.5L、重量 約1.6〜2.0kg。保冷 6度以下:6時間 / 10度以下:13時間。',weight:'約1.6 kg'}];
+  description:'保冷ウォータージャグ。約Φ29.7×34.3(h)cm、容量 7.5L、重量 約1.6〜2.0kg。保冷 6度以下:6時間 / 10度以下:13時間。',weight:'約1.6 kg'},
+ {id:'br-doppelganger-ul-hammock',mk3d:'hammock',name:'ドッペルギャンガー ウルトラライトハンモック (スタンド付き)',manufacturer:'ドッペルギャンガー (DOPPELGANGER OUTDOOR)',productName:'ウルトラライトハンモック',modelNumber:'SH1-219',category:'furniture',width:.85,depth:2.3,height:.75,ropeMargin:0,color:'#3f6d8c',
+  description:'アルミスタンド付きの自立式ハンモック。設置サイズ 約幅85×長さ230×高さ75cm、重量 約6.3kg、耐荷重 約85kg。木がなくても使える。',weight:'約6.3 kg'},
+ {id:'br-logos-wide-firewood-rack-table',mk3d:'woodrack',name:'ロゴス ワイド薪ラックウッドテーブル',manufacturer:'ロゴス (LOGOS)',productName:'ワイド薪ラックウッドテーブル',category:'furniture',width:.4,depth:.36,height:.37,ropeMargin:0,color:'#2a2b2e',
+  description:'スチールの薪ラックに木製天板を載せればテーブルにもなる。約40×36×37(h)cm、重量 約2.8kg。',weight:'約2.8 kg'},
+ {id:'br-captainstag-trine-tripod-ug10',mk3d:'tripod',name:'キャプテンスタッグ トライン 焚き火三脚 (UG-10)',manufacturer:'キャプテンスタッグ (CAPTAIN STAG)',productName:'トライン 焚き火三脚',modelNumber:'UG-10',category:'furniture',width:.7,depth:.6,height:1.435,ropeMargin:0,color:'#1d1e21',
+  description:'焚き火の上に立ててチェーンで鍋を吊るす三脚。約70×60×143.5(h)cm、重量 約2.4kg、耐荷重 約20kg。',weight:'約2.4 kg'},
+ {id:'br-honma-asw-60b-stove',mk3d:'woodstove',name:'ホンマ製作所 黒耐熱窓付時計型ストーブ (ASW-60B)',manufacturer:'ホンマ製作所',productName:'黒耐熱窓付時計型ストーブ',modelNumber:'ASW-60B',category:'furniture',width:.4,depth:.6,height:.4,ropeMargin:0,color:'#1b1b1d',
+  description:'耐熱窓付きの時計型薪ストーブ。本体 約40×60×40(h)cm、重量 約6.7kg、煙突径106mm(背面)。3Dの煙突(約2m)は別売の煙突を立てた想定。',weight:'約6.7 kg'}];
 __CBR.forEach(g=>{g.isBrand=!0;g.genSym=!0;g.shapeType='br_'+g.mk3d});
 Object.assign(__CV,{
  'br-ddhammocks-dd-tarp-3x3':{base:'#5a6142',t:['5a6142'],al:1,v:[['オリーブグリーン','#5a6142'],['コヨーテブラウン','#8b6b4a'],['ジェットブラック','#1d1e21']]}});
@@ -74,5 +82,33 @@ function __mk3d(G,it){const PI=Math.PI,add=(geo,mat,cast)=>{const m=new Z(geo,ma
   const sp=add(new eo(.06,.045,.05),mK);sp.position.set(0,H*.09,r+.012);const sv=add(new to(.009,.009,.03,8),mS);sv.rotation.x=PI/2;sv.position.set(0,H*.06,r+.04);
   const hd=add(new Bo(new vo([new J(-r*.75,H*.84,0),new J(-r*.6,H*1.0,0),new J(r*.6,H*1.0,0),new J(r*.75,H*.84,0)]),24,.012,8,!1),mK,!0);
   const lg=add(new to(r*1.002,r*1.002,.004,28,1,!0),mS);lg.position.y=H*.84;
+ }else if(k==='hammock'){ /* 自立スタンド: 床の2本のレール + 両端のアーチ、間に吊ったハンモック生地 */
+  const hx=W/2,hz=D/2,mA=new Q({color:'#c9ced3',metalness:.85,roughness:.3}),mF=fab(it.color||'#3f6d8c'),ty=Math.max(H,.75)+.25;
+  [-1,1].forEach(s=>{const r=add(new to(.018,.018,D,10),mA,!0);r.rotation.x=PI/2;r.position.set(s*hx*.85,.02,0)});
+  [-1,1].forEach(sz=>{const pts=[new J(-hx*.85,.02,sz*hz*.92),new J(-hx*.5,ty*.8,sz*hz*.98),new J(0,ty,sz*hz),new J(hx*.5,ty*.8,sz*hz*.98),new J(hx*.85,.02,sz*hz*.92)];add(new Bo(new vo(pts),40,.018,8,!1),mA,!0)});
+  const NU=12,NV=20,pos=[];const P=(u,v)=>{const z=(v-.5)*D*.86,sag=(1-Math.pow(2*v-1,2))*(ty-.42),x=(u-.5)*W*.72*Math.sin(PI*v)+0,y=ty-.05-sag+.08*Math.pow(2*u-1,2)*Math.sin(PI*v);return[x,y,z]};
+  for(let i=0;i<NU;i++)for(let j=0;j<NV;j++){const a=P(i/NU,j/NV),b=P((i+1)/NU,j/NV),c=P((i+1)/NU,(j+1)/NV),d=P(i/NU,(j+1)/NV);pos.push(a,b,c,a,c,d)}tri(pos,mF,!0);
+  [-1,1].forEach(sz=>{G.add(new La(new Qi().setFromPoints([new J(0,ty,sz*hz),new J(0,ty-.05,sz*D*.43)]),new ua({color:'#2b2b2e'})))});
+ }else if(k==='woodrack'){ /* 薪ラック: スチールのU字フレームに薪を積み、上に木の天板 */
+  const hx=W/2,hz=D/2,mS=new Q({color:'#2a2b2e',metalness:.6,roughness:.45}),mW=new Q({color:'#a77a4c',roughness:.8}),mBk=new Q({color:'#8a6a4a',roughness:.95}),mEnd=new Q({color:'#c9a77a',roughness:.9});
+  [-1,1].forEach(sx=>[-1,1].forEach(sz=>{const l=add(new to(.01,.01,H,8),mS,!0);l.position.set(sx*hx*.95,H/2,sz*hz*.85)}));
+  [-1,1].forEach(sz=>{const pts=[new J(-hx*.95,H*.85,sz*hz*.85),new J(-hx*.6,.06,sz*hz*.85),new J(hx*.6,.06,sz*hz*.85),new J(hx*.95,H*.85,sz*hz*.85)];add(new Bo(new vo(pts),30,.008,6,!1),mS,!0)});
+  const top=add(new eo(W,.025,D),mW,!0);top.position.y=H;
+  [[-.12,.1],[0,.1],[.12,.1],[-.06,.19],[.06,.19],[0,.27]].forEach(([x,y])=>{const lg=add(new to(.045,.045,D*.92,7),[mBk,mBk,mEnd]);lg.rotation.x=PI/2;lg.position.set(x*W/.4,y*H/.37,0)});
+ }else if(k==='tripod'){ /* 焚き火三脚: 頂点でまとめた3本脚と、中央に垂らしたチェーンとフック・鍋 */
+  const mS=new Q({color:'#1d1e21',metalness:.6,roughness:.4}),top=new J(0,H,0),R=Math.min(W,D)/2*1.05;
+  for(let i=0;i<3;i++){const a=i*2*PI/3+PI/6,f=new J(Math.sin(a)*R,0,Math.cos(a)*R),m=add(new to(.013,.013,top.distanceTo(f),8),mS,!0);m.position.copy(top).add(f).multiplyScalar(.5);m.quaternion.setFromUnitVectors(new J(0,1,0),f.clone().sub(top).normalize())}
+  const cap=add(new to(.035,.035,.06,10),mS);cap.position.y=H;
+  const ch=add(new to(.004,.004,H*.55,6),new Q({color:'#6b6f75',metalness:.9,roughness:.3}));ch.position.y=H-H*.275;
+  const pot=add(new to(.11,.1,.13,18),new Q({color:'#2a2a2c',metalness:.4,roughness:.5}),!0);pot.position.y=H*.45-.08;
+  const bail=add(new zo(.1,.004,6,16,PI),mS);bail.position.y=H*.45-.02;
+ }else if(k==='woodstove'){ /* 時計型薪ストーブ: 箱形の本体と耐熱窓、脚、背面から立ち上がる煙突とT笠 */
+  const hx=W/2,hz=D/2,bh=H*.82,mS=new Q({color:'#2c2c30',metalness:.5,roughness:.5}),mSt=new Q({color:'#bfc4c9',metalness:.9,roughness:.25});
+  const body=add(new eo(W,bh*.86,D),mS,!0);body.position.y=H-bh*.86/2;const rf=add(new to(1,1,D,24,1,!1,-PI/2,PI),mS,!0);rf.rotation.x=PI/2;rf.scale.set(hx,1,.06);rf.position.y=H;
+  [-1,1].forEach(sx=>[-1,1].forEach(sz=>{const l=add(new to(.012,.012,H-bh*.86,8),mS);l.position.set(sx*hx*.85,(H-bh*.86)/2,sz*hz*.85)}));
+  const win=add(new Io(W*.6,bh*.45),new ua({color:'#ff9a3c'}));win.position.set(0,H-bh*.86*.5,hz+.009);
+  const fr=add(new eo(W*.66,bh*.52,.01),mS);fr.position.set(0,H-bh*.86*.5,hz-.002);
+  const CH=2.1,fl=add(new to(.053,.053,CH-H,16),mSt,!0);fl.position.set(0,H+(CH-H)/2,-hz*.75);
+  const tc=add(new to(.11,.11,.08,16),mSt);tc.position.set(0,CH+.05,-hz*.75);const tc2=add(new no(.13,.07,16),mSt);tc2.position.set(0,CH+.12,-hz*.75);
  }
 }
