@@ -6363,6 +6363,14 @@ function __nkSample(){
   const th=Math.PI/2-s.f*Math.PI/180,c=Math.cos(th),sn=Math.sin(th),gx=s.x-__NKX+75,gz=s.z-__NKZ+70;
   const put=(id,lx,lz,lr,extra)=>{const p=P(id);if(!p)return;const o={...p,...(extra||{}),id:`nk${s.n}-${out.length}`,presetId:p.id,x:Math.round((gx+lx*c+lz*sn)*100)/100,y:Math.round((gz-lx*sn+lz*c)*100)/100,
     rotation:Math.round(s.f-90+(lr||0)),showRopes:p.category===`tent`||p.category===`tarp`};const cv=__CV[p.id];if(cv&&cv.ui!==0&&R()<.5){const v=pick(cv.v);o.colorName=v[0];o.color=v[1]}out.push(o)};
+  /* 16番サイトはユーザー指定の配置 (ルーミーフロント2ルームの前室にリビング、キャノピーの先に焚火台LL、駐車枠にMRワゴン) */
+  if(s.n===16){const T=[-2.4,-1.25],at=(id,dx,dz,r,ex)=>put(id,T[0]+dx,T[1]+dz,r,ex);
+   at('my-coleman-roomy-front-2room',0,0,0,{locked:!0});
+   at('my-coleman-natural-mini-table',-.1,1.38,0);at('my-coleman-coolstage-tabletop',.38,1.32,0);at('my-coleman-packaway-lantern',-.1,1.4,0);
+   at('my-sp-goen-gs1000',0,2.19,0);at('my-coleman-dutch-oven-10',0,2.19,0);
+   at('my-coleman-healing-chair-hb',-.68,.56,-35);at('my-coleman-healing-chair-mesh',.6,.37,35);
+   at('my-sp-takibitai-ll',.29,3.56,0);
+   put('my-suzuki-mrwagon',3.8,3,0);return}
   /* テント (各区画に必ず1張) */
   const t=s.n===1?tents[0]:pick(tents);put(t[0],t[1],t[2],0);
   /* 車は駐車枠の中央 */
