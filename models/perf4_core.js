@@ -1,50 +1,66 @@
 /* ===== 3D 軽量化 その3 (3D は見るだけ。ギアの配置は 2D で行う) =====
    1) 24m 四方ごとに、動かない部品を素材ごとに1つにまとめる (ロープの線もまとめる)
-   2) 遠く (40m 超) の区画は、各ギアの実際の形を積み木状 (ボクセル) に組み直した簡易形で描く。区画ごと1回の描画命令
+   2) 遠く (40m 超) の区画は、各ギアの実際の3Dモデルを間引いた簡易形で描く。区画ごと1回の描画命令
       細かい部品のまとめは、その区画に近づいたときに初めて行う
    3) 影は止まっている物しかないので、景色が変わったときだけ描き直す */
 const __VXC=new Map;
-/* ギアの部品を細かい立方体 (長辺を12分割) に置き換え、外から見える面だけを作る。各立方体は一番多く含む部品の色。
-   形の計算結果は「部品の形と配置」ごとに使い回し、色だけそのギアの素材から付け直す (色違いでも計算は1回) */
-function __mColor(o){const m=o.material,c=m.color||{r:.6,g:.6,b:.6},ca=m.vertexColors&&o.geometry.attributes.color;if(!ca)return[c.r,c.g,c.b];
+/* 遠くに描く簡易形。形の計算結果は「部品の形と配置」ごとに使い回し、色だけそのギアの素材から付け直す (色違いでも計算は1回) */
+/* 模様 (テクスチャ) の平均色。生地の色が模様側に入っている素材でも実物に近い色にする */
+const __TXA=new WeakMap;
+function __mapAvg(t){if(!t||!t.image)return null;if(__TXA.has(t))return __TXA.get(t);let r=null;
+ try{const im=t.image,cv=document.createElement('canvas');cv.width=cv.height=8;const g=cv.getContext('2d');g.drawImage(im,0,0,8,8);const d=g.getImageData(0,0,8,8).data;let R=0,G=0,B=0,n=0;
+  for(let i=0;i<d.length;i+=4){if(d[i+3]<128)continue;R+=d[i];G+=d[i+1];B+=d[i+2];n++}
+  if(n){const lin=v=>{v/=255;return v<=.04045?v/12.92:Math.pow((v+.055)/1.055,2.4)},sr=t.colorSpace==='srgb';r=[R/n,G/n,B/n].map(v=>sr?lin(v):v/255)}}catch{}
+ __TXA.set(t,r);return r}
+function __mColor(o){const m=o.material,c0=m.color||{r:.6,g:.6,b:.6},ta=__mapAvg(m.map),c=ta?{r:c0.r*ta[0],g:c0.g*ta[1],b:c0.b*ta[2]}:c0,ca=m.vertexColors&&o.geometry.attributes.color;if(!ca)return[c.r,c.g,c.b];
  let r=0,g=0,b=0;const n=ca.count,st=Math.max(1,Math.floor(n/64));let k=0;for(let i=0;i<n;i+=st,k++){r+=ca.getX(i);g+=ca.getY(i);b+=ca.getZ(i)}return[c.r*r/k,c.g*g/k,c.b*b/k]}
 function __voxProxy(s,parts){
- const ms=parts.filter(o=>o.isMesh&&!(o.material.transparent&&o.material.opacity<.6));if(!ms.length)return null;
- const si=new Sr().copy(s.matrixWorld).invert(),rel=ms.map(o=>new Sr().multiplyMatrices(si,o.matrixWorld));
+ /* 透けた部品 (メッシュ窓・文字ラベルなど模様の透けで見せる物) は遠くでは省く */
+ let ms=parts.filter(o=>{const m=o.material;return o.isMesh&&!(m.transparent&&(m.opacity<.6||m.map))&&!(m.alphaTest>0)});if(!ms.length)return null;
+ const si=new Sr().copy(s.matrixWorld).invert();let rel=ms.map(o=>new Sr().multiplyMatrices(si,o.matrixWorld));
+ /* テント・タープ: 外側の生地の内側に収まる部品 (インナー・遮光の内張り・中の小物) は外からは見えないので省く (間引くと外側の生地を突き抜けてまだらに見えるため) */
+ if(s.userData.cat===`tent`||s.userData.cat===`tarp`){const bb=ms.map((o,i)=>{if(!o.geometry.boundingBox)o.geometry.computeBoundingBox();const B=o.geometry.boundingBox,c=[1e9,1e9,1e9,-1e9,-1e9,-1e9],e=rel[i].elements;
+   for(let k=0;k<8;k++){const x=k&1?B.max.x:B.min.x,y=k&2?B.max.y:B.min.y,z=k&4?B.max.z:B.min.z,X=e[0]*x+e[4]*y+e[8]*z+e[12],Yy=e[1]*x+e[5]*y+e[9]*z+e[13],Zz=e[2]*x+e[6]*y+e[10]*z+e[14];
+    c[0]=Math.min(c[0],X);c[1]=Math.min(c[1],Yy);c[2]=Math.min(c[2],Zz);c[3]=Math.max(c[3],X);c[4]=Math.max(c[4],Yy);c[5]=Math.max(c[5],Zz)}return c});
+  const U=bb.reduce((u,c)=>[Math.min(u[0],c[0]),Math.min(u[1],c[1]),Math.min(u[2],c[2]),Math.max(u[3],c[3]),Math.max(u[4],c[4]),Math.max(u[5],c[5])],[1e9,1e9,1e9,-1e9,-1e9,-1e9]),
+   mx=(U[3]-U[0])*.06,mz=(U[5]-U[2])*.06,my=(U[4]-U[1])*.1,keep=bb.map(c=>!(c[0]>U[0]+mx&&c[3]<U[3]-mx&&c[2]>U[2]+mz&&c[5]<U[5]-mz&&c[4]<U[4]-my));
+  if(keep.some(k=>k)){ms=ms.filter((o,i)=>keep[i]);rel=rel.filter((r,i)=>keep[i])}}
  const key=ms.map((o,i)=>__gKey(o.geometry)+'#'+rel[i].elements.map(v=>Math.round(v*1e3)).join(',')).join('~');
  let R=__VXC.get(key);
- if(R===void 0){R=__voxShape(ms,rel);__VXC.set(key,R)}
+ if(R===void 0){R=__decShape(ms,rel,s.userData.cat===`tent`||s.userData.cat===`tarp`);__VXC.set(key,R)}
  if(!R)return null;
  const cols=ms.map(__mColor),col=new Float32Array(R.mi.length*3);for(let f=0;f<R.mi.length;f++){const c=cols[R.mi[f]];col[f*3]=c[0];col[f*3+1]=c[1];col[f*3+2]=c[2]}
  const g=new Qi;g.setAttribute('position',new Y(R.pos,3));g.setAttribute('normal',new Y(R.nor,3));g.setAttribute('color',new Y(col,3));return g}
-function __voxShape(ms,rel){
- /* 部品の頂点をギアの座標に変換 (1回だけ) */
+/* 実際の3Dモデルを「頂点のまとめ」で間引く (長辺を28分割した格子ごとに頂点を1つにまとめ、潰れた三角形を捨てる)。
+   積み木状より元の輪郭 (テントのアーチ、チェアの背、車の窓まわり) が残り、色も部品ごとのまま */
+function __decShape(ms,rel,tentish){
  const TP=ms.map((o,i)=>{const a=o.geometry.attributes.position.array,e=rel[i].elements,n=a.length/3,r=new Float32Array(n*3);
   for(let k=0;k<n;k++){const x=a[k*3],y=a[k*3+1],z=a[k*3+2];r[k*3]=e[0]*x+e[4]*y+e[8]*z+e[12];r[k*3+1]=e[1]*x+e[5]*y+e[9]*z+e[13];r[k*3+2]=e[2]*x+e[6]*y+e[10]*z+e[14]}return r});
  const mn=[1e9,1e9,1e9],mx=[-1e9,-1e9,-1e9];TP.forEach(r=>{for(let k=0;k<r.length;k+=3)for(let d=0;d<3;d++){const v=r[k+d];if(v<mn[d])mn[d]=v;if(v>mx[d])mx[d]=v}});
  const ext=Math.max(mx[0]-mn[0],mx[1]-mn[1],mx[2]-mn[2]);if(!(ext>0))return null;
- const v=Math.max(.04,ext/12),iv=1/v,nx=Math.max(1,Math.ceil((mx[0]-mn[0])*iv)),ny=Math.max(1,Math.ceil((mx[1]-mn[1])*iv)),nz=Math.max(1,Math.ceil((mx[2]-mn[2])*iv)),N=nx*ny*nz;
- const W=new Float32Array(N),CI=new Int16Array(N).fill(-1);
- const put=(x,y,z,c,w)=>{let i=Math.floor((x-mn[0])*iv),j=Math.floor((y-mn[1])*iv),k=Math.floor((z-mn[2])*iv);i=i<0?0:i>=nx?nx-1:i;j=j<0?0:j>=ny?ny-1:j;k=k<0?0:k>=nz?nz-1:k;const q=(k*ny+j)*nx+i;
-  if(CI[q]===c)W[q]+=w;else if(w>W[q]){CI[q]=c;W[q]=w}};
- ms.forEach((o,mi)=>{const r=TP[mi],ix=o.geometry.index,src=ix?ix.array:null,n=ix?ix.count:r.length/3;
-  for(let t=0;t+2<n;t+=3){const a=(src?src[t]:t)*3,b=(src?src[t+1]:t+1)*3,c=(src?src[t+2]:t+2)*3;
-   const ux=r[b]-r[a],uy=r[b+1]-r[a+1],uz=r[b+2]-r[a+2],wx=r[c]-r[a],wy=r[c+1]-r[a+1],wz=r[c+2]-r[a+2];
-   const area=Math.hypot(uy*wz-uz*wy,uz*wx-ux*wz,ux*wy-uy*wx)/2;if(!(area>0))continue;
-   const ns=Math.min(6,Math.max(1,Math.ceil(area*iv*iv*3))),w=area/ns;
-   for(let s2=0;s2<ns;s2++){let p=ns===1?1/3:(s2*.618034+.31)%1,q=ns===1?1/3:(s2*.754878+.17)%1;if(p+q>1){p=1-p;q=1-q}
-    put(r[a]+ux*p+wx*q,r[a+1]+uy*p+wy*q,r[a+2]+uz*p+wz*q,mi,w)}}});
- const pos=[],nor=[],mi=[],has=(i,j,k)=>i>=0&&j>=0&&k>=0&&i<nx&&j<ny&&k<nz&&CI[(k*ny+j)*nx+i]>=0;
- const F6=[[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]];
- for(let k=0;k<nz;k++)for(let j=0;j<ny;j++)for(let i=0;i<nx;i++){const q=(k*ny+j)*nx+i;if(CI[q]<0)continue;const x0=mn[0]+i*v,y0=mn[1]+j*v,z0=mn[2]+k*v;
-  F6.forEach(d=>{if(has(i+d[0],j+d[1],k+d[2]))return;
-   /* 面の4隅 (法線の向きの面上で、残り2軸に広げる) */
-   const o=[x0+(d[0]>0?v:0),y0+(d[1]>0?v:0),z0+(d[2]>0?v:0)],U=[0,0,0],V=[0,0,0],axes=[0,1,2].filter(a=>!d[a]);U[axes[0]]=v;V[axes[1]]=v;
-   let p0=o,p1=[o[0]+U[0],o[1]+U[1],o[2]+U[2]],p2=[o[0]+U[0]+V[0],o[1]+U[1]+V[1],o[2]+U[2]+V[2]],p3=[o[0]+V[0],o[1]+V[1],o[2]+V[2]];
-   const cr=U[1]*V[2]-U[2]*V[1],cg=U[2]*V[0]-U[0]*V[2],cb=U[0]*V[1]-U[1]*V[0];if(cr*d[0]+cg*d[1]+cb*d[2]<0){const t=p1;p1=p3;p3=t}
-   [p0,p1,p2,p0,p2,p3].forEach(p=>{pos.push(p[0],p[1],p[2]);nor.push(d[0],d[1],d[2]);mi.push(CI[q])})})}
+ const v=Math.max(.015,ext/28),iv=1/v,nx=Math.ceil((mx[0]-mn[0])*iv)+1,ny=Math.ceil((mx[1]-mn[1])*iv)+1;
+ const pos=[],mi=[],ar=(P,a,b,c)=>{const ux=P[b]-P[a],uy=P[b+1]-P[a+1],uz=P[b+2]-P[a+2],wx=P[c]-P[a],wy=P[c+1]-P[a+1],wz=P[c+2]-P[a+2];return Math.hypot(uy*wz-uz*wy,uz*wx-ux*wz,ux*wy-uy*wx)/2};
+ /* 部品ごとの元の面積。テントでは小さな部品 (ポール・袖・ペグ・ロープ金具) は遠くでは省く */
+ const A0=ms.map((o,m)=>{const r=TP[m],ix=o.geometry.index,src=ix?ix.array:null,n=ix?ix.count:r.length/3;let A=0;for(let t=0;t+2<n;t+=3)A+=ar(r,(src?src[t]:t)*3,(src?src[t+1]:t+1)*3,(src?src[t+2]:t+2)*3);return A}),Amax=Math.max(...A0);
+ /* 面積の大きい部品から順に。重なった2枚の面 (シェードの表地と裏の UV カット面など) は、同じ格子の三角形になるので先の大きい方だけ残す (遠くで前後がちらついてまだらに見えるのを防ぐ) */
+ const NC=nx*ny*(Math.ceil((mx[2]-mn[2])*iv)+1),G3=new Set,ord=ms.map((o,m)=>m).sort((x,y)=>A0[y]-A0[x]);
+ ord.forEach(m=>{const o=ms[m];if(tentish&&A0[m]<Amax*.04)return;const r=TP[m],ix=o.geometry.index,src=ix?ix.array:null,n=ix?ix.count:r.length/3,nv=r.length/3;
+  /* 頂点 → 格子番号、格子ごとの平均位置 */
+  const cid=new Int32Array(nv),ck=new Float64Array(nv),C=new Map;let id=0;const S=[];
+  for(let k=0;k<nv;k++){const i=Math.floor((r[k*3]-mn[0])*iv),j=Math.floor((r[k*3+1]-mn[1])*iv),q=Math.floor((r[k*3+2]-mn[2])*iv),key=(q*ny+j)*nx+i;let c=C.get(key);
+   if(c===void 0){c=id++;C.set(key,c);S.push(0,0,0,0)}cid[k]=c;ck[k]=key;S[c*4]+=r[k*3];S[c*4+1]+=r[k*3+1];S[c*4+2]+=r[k*3+2];S[c*4+3]++}
+  const seen=new Set,TP2=[],K3=[];
+  for(let t=0;t+2<n;t+=3){const va=src?src[t]:t,vb=src?src[t+1]:t+1,vc=src?src[t+2]:t+2,a=cid[va],b=cid[vb],c=cid[vc];if(a===b||b===c||a===c)continue;
+   const lo=Math.min(a,b,c),hi=Math.max(a,b,c),mid=a+b+c-lo-hi,k=(lo*id+mid)*id+hi;if(seen.has(k))continue;seen.add(k);
+   const x1=ck[va],x2=ck[vb],x3=ck[vc],l3=Math.min(x1,x2,x3),h3=Math.max(x1,x2,x3),g=(l3*NC+(x1+x2+x3-l3-h3))*NC+h3;for(const u of[a,b,c]){const w=S[u*4+3];TP2.push(S[u*4]/w,S[u*4+1]/w,S[u*4+2]/w)}K3.push(g)}
+  /* 間引いて面積が大きく膨らんだ部品 (細い部品がギザギザの大きな三角形になった物) は取り除く */
+  let A1=0;for(let t=0;t<TP2.length;t+=9)A1+=ar(TP2,t,t+3,t+6);if(A1>A0[m]*1.6+v*v*2)return;
+  K3.forEach((g,f)=>{if(G3.has(g))return;G3.add(g);for(let q=0;q<9;q++)pos.push(TP2[f*9+q]);mi.push(m,m,m)})});
  if(!pos.length)return null;
- return{pos:new Float32Array(pos),nor:new Float32Array(nor),mi:new Int16Array(mi)}}
+ /* 面ごとの法線 */
+ const P=new Float32Array(pos),N=new Float32Array(P.length);
+ for(let t=0;t<P.length;t+=9){const ux=P[t+3]-P[t],uy=P[t+4]-P[t+1],uz=P[t+5]-P[t+2],wx=P[t+6]-P[t],wy=P[t+7]-P[t+1],wz=P[t+8]-P[t+2];let X=uy*wz-uz*wy,Yy=uz*wx-ux*wz,Zz=ux*wy-uy*wx;const L=Math.hypot(X,Yy,Zz)||1;X/=L;Yy/=L;Zz/=L;for(let q=0;q<9;q+=3){N[t+q]=X;N[t+q+1]=Yy;N[t+q+2]=Zz}}
+ return{pos:P,nor:N,mi:new Int16Array(mi)}}
 /* 部品 (メッシュ・線) を素材ごとに1つのジオメトリへ。複製を作らず、変換した値を直接書き込む */
 function __catGeo(list,line){const l0=list[0].o.geometry,hasN=!line&&!!l0.attributes.normal,hasU=!line&&!!l0.attributes.uv,hasC=!!l0.attributes.color,cs=hasC?l0.attributes.color.itemSize:3;
  const seq=list.map(({o})=>{const g=o.geometry,ix=g.index,pc=g.attributes.position.count,src=ix?ix.array:null,cnt=ix?ix.count:pc,at=k=>src?src[k]:k;
@@ -76,7 +92,7 @@ function __cellBuild(A,skip,big){
    else{const key=__mKey(o.material)+'|'+(g.attributes.color?g.attributes.color.itemSize:0)+'|'+o.renderOrder;if(!c.L.has(key))c.L.set(key,[]);c.L.get(key).push({o,M})}
    o.parent&&o.parent.remove(o)})});
  const cells=[];
- C.forEach(c=>{let px=null;if(c.px.length){px=new Z(__catGeo(c.px,!1),new Q({vertexColors:!0,roughness:.9,flatShading:!0}));px.visible=!1;px.matrixAutoUpdate=!1;A.add(px)}
+ C.forEach(c=>{let px=null;if(c.px.length){px=new Z(__catGeo(c.px,!1),new Q({vertexColors:!0,roughness:.85,flatShading:!0,side:2}));px.visible=!1;px.matrixAutoUpdate=!1;A.add(px)}
   const e={A,M:c.M,L:c.L,det:null,px,mn:[c.mn[0]-6,c.mn[1]-6],mx:[c.mx[0]+6,c.mx[1]+6],far:null};if(!px)__cellDetail(e);cells.push(e)});
  window.__cells=cells}
 /* 区画の細かい部品は、近づいて初めて必要になったときに組み立てる (全体表示では組み立てない) */
