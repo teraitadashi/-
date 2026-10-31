@@ -78,16 +78,18 @@ function __catGeo(list,line){const l0=list[0].o.geometry,hasN=!line&&!!l0.attrib
    if(U&&ua){U[w*2]=ua[k*2];U[w*2+1]=ua[k*2+1]}
    if(C&&ca)for(let c=0;c<cs;c++)C[w*cs+c]=ca[k*cs+c]}});
  const g=new Qi;g.setAttribute('position',new Y(P,3));if(N)g.setAttribute('normal',new Y(N,3));if(U)g.setAttribute('uv',new Y(U,2));if(C)g.setAttribute('color',new Y(C,cs));return g}
-function __cellBuild(A,skip,big,night){
+function __cellBuild(A,skip,big,night){(window.__cells||[]).forEach(c=>{c.cache&&c.cache.forEach(m=>m.geometry.dispose())});
  A.updateMatrixWorld(!0);const inv=new Sr().copy(A.matrixWorld).invert(),C=new Map,cs=big?24:1e6;
  window.__cellInv=inv;
+ /* 同じ形を複数のギアで共有している部品 (車の車体など) や頂点の多い部品はまとめない (まとめるとギアの数だけコピーができてメモリを大きく使う) */
+ const use=new Map;A.traverse(o=>{if(o.isMesh&&o.geometry)use.set(o.geometry,(use.get(o.geometry)||0)+1)});
  A.children.slice().forEach(s=>{if(!s.userData||!s.userData.itemId)return;
-  const k=Math.floor(s.position.x/cs)+','+Math.floor(s.position.z/cs);let c=C.get(k);if(!c){c={M:new Map,L:new Map,px:[],gl:[],mn:[1e9,1e9],mx:[-1e9,-1e9]};C.set(k,c)}
+  const k=Math.floor(s.position.x/cs)+','+Math.floor(s.position.z/cs);let c=C.get(k);if(!c){c={M:new Map,L:new Map,K:[],px:[],gl:[],mn:[1e9,1e9],mx:[-1e9,-1e9]};C.set(k,c)}
   if(night)s.traverse(o=>{if(o.isPointLight)c.gl.push(new J().setFromMatrixPosition(o.matrixWorld).applyMatrix4(inv))});
   c.mn=[Math.min(c.mn[0],s.position.x),Math.min(c.mn[1],s.position.z)];c.mx=[Math.max(c.mx[0],s.position.x),Math.max(c.mx[1],s.position.z)];
   const parts=[];s.traverse(o=>{if(o===s||!(o.isMesh||o.isLine)||o.children.length||skip&&skip.has(o)||o.userData.noMerge||!o.geometry||!o.geometry.attributes.position||Array.isArray(o.material)||!o.visible)return;parts.push(o)});
   if(big){const pg=__voxProxy(s,parts);if(pg){pg.applyMatrix4(new Sr().multiplyMatrices(inv,s.matrixWorld));c.px.push({o:{geometry:pg},M:new Sr})}}
-  parts.forEach(o=>{const g=o.geometry,M=new Sr().multiplyMatrices(inv,o.matrixWorld);
+  parts.forEach(o=>{const g=o.geometry;if(o.isMesh&&(use.get(g)>1||g.attributes.position.count>6000)){c.K.push(o);return}const M=new Sr().multiplyMatrices(inv,o.matrixWorld);
    if(o.isMesh){const key=__mKey(o.material)+'|'+(o.castShadow?1:0)+(o.receiveShadow?1:0)+'|'+(g.attributes.normal?1:0)+(g.attributes.uv?1:0)+(g.attributes.color?g.attributes.color.itemSize:0)+'|'+o.renderOrder;
     if(!c.M.has(key))c.M.set(key,[]);c.M.get(key).push({o,M})}
    else{const key=__mKey(o.material)+'|'+(g.attributes.color?g.attributes.color.itemSize:0)+'|'+o.renderOrder;if(!c.L.has(key))c.L.set(key,[]);c.L.get(key).push({o,M})}
@@ -96,14 +98,14 @@ function __cellBuild(A,skip,big,night){
  C.forEach(c=>{let px=null;if(c.px.length){px=new Z(__catGeo(c.px,!1),new Q({vertexColors:!0,roughness:.85,flatShading:!0,side:2}));px.visible=!1;px.matrixAutoUpdate=!1;A.add(px)}
   /* 夜: 遠くの区画でもランタン・焚き火の明かりが見えるよう、光の位置に明るい玉を置く (遠いときだけ表示) */
   let gw=null;if(c.gl.length){const sp=new Ro(.32,8,6);gw=new Z(__catGeo(c.gl.map(v=>({o:{geometry:sp},M:new Sr().makeTranslation(v.x,v.y,v.z)})),!1),new ua({color:'#ffc86b',transparent:!0,opacity:.95,blending:2,depthWrite:!1}));gw.visible=!1;gw.matrixAutoUpdate=!1;A.add(gw)}
-  const e={A,M:c.M,L:c.L,det:null,px,gw,mn:[c.mn[0]-6,c.mn[1]-6],mx:[c.mx[0]+6,c.mx[1]+6],far:null};if(!px)__cellDetail(e);cells.push(e)});
+  const e={A,M:c.M,L:c.L,K:c.K,det:null,px,gw,mn:[c.mn[0]-6,c.mn[1]-6],mx:[c.mx[0]+6,c.mx[1]+6],far:null};if(!px)__cellDetail(e);cells.push(e)});
  window.__cells=cells}
 /* 区画の細かい部品は、近づいて初めて必要になったときに組み立てる (全体表示では組み立てない) */
-function __cellDetail(e){if(e.det)return;const A=e.A,det=[];
+function __cellDetail(e){e.seen=++__cellSeq;if(e.det)return;if(e.cache){e.cache.forEach(m=>e.A.add(m));e.det=e.cache;e.cache=null;return}const A=e.A,det=[];
  e.M.forEach(list=>{const o0=list[0].o,m=new Z(__catGeo(list,!1),o0.material);m.castShadow=o0.castShadow;m.receiveShadow=o0.receiveShadow;m.renderOrder=o0.renderOrder;m.matrixAutoUpdate=!1;A.add(m);det.push(m)});
  e.L.forEach(list=>{const o0=list[0].o,m=new Va(__catGeo(list,!0),o0.material);m.renderOrder=o0.renderOrder;m.matrixAutoUpdate=!1;A.add(m);det.push(m)});
  e.det=det;e.M=e.L=null}
 function __cellTick(cam){const L=window.__cells;if(!L||!L.length||!window.__cellInv)return;const p=cam.position.clone().applyMatrix4(window.__cellInv);let ch=!1;
  for(const c of L){if(!c.px)continue;const dx=Math.max(c.mn[0]-p.x,0,p.x-c.mx[0]),dz=Math.max(c.mn[1]-p.z,0,p.z-c.mx[1]),far=Math.hypot(dx,dz,p.y)>40;
-  if(far!==c.far){c.far=far;if(!far)__cellDetail(c);c.px.visible=far;if(c.gw)c.gw.visible=far;c.det&&c.det.forEach(o=>o.visible=!far);ch=!0}}
- if(ch&&window.__rend)window.__rend.shadowMap.needsUpdate=!0}
+  if(far!==c.far){c.far=far;if(!far)__cellDetail(c);c.px.visible=far;c.K.forEach(o=>o.visible=!far);if(c.gw)c.gw.visible=far;c.det&&c.det.forEach(o=>o.visible=!far);ch=!0}}
+ if(ch){__cellEvict(L);if(window.__rend)window.__rend.shadowMap.needsUpdate=!0}}
