@@ -6371,10 +6371,11 @@ function __tooiSample(){const K=__campPool(),R=__pRng(7373),out=[],A=__TY,G=[];
   const rot=Math.round((Math.atan2(b[1]-a[1],b[0]-a[0])*180/Math.PI)/15)*15;
   const F=__campFoot(ox,oy,rot,5.2,-5.6,5);if(!F.every(([x,z])=>beachOK(x,z)))continue;if(G.some(g=>Math.hypot(g[0]-ox,g[1]-oy)<13))continue;G.push([ox,oy,rot,0])}
  G.forEach((g,i)=>__campGroup(out,K,R,`ty${i}`,g[0],g[1],g[2],{tent:i===0?K.tents[0]:null,car:g[3]?null:[4.3,-1.2,0]}));
- /* 芝生サイトの車は駐車場に並べる (駐車場の長い辺に沿って、通路側を向けて) */
- const pk=A.park,ux=pk[1][0]-pk[0][0],uz=pk[1][1]-pk[0][1],L=Math.hypot(ux,uz),dx=ux/L,dz=uz/L,nx=-dz,nz=dx,ang=Math.atan2(dz,dx)*180/Math.PI+90;
- G.filter(g=>g[3]).forEach((g,i)=>{const p=K.P(K.cars[Math.floor(R()*2)]);if(!p)return;const d=10+i*3.2,x=pk[0][0]+dx*d+nx*3.4,z=pk[0][1]+dz*d+nz*3.4;
-  const it={...p,id:`typk-${i}`,presetId:p.id,x:Math.round(x*100)/100,y:Math.round(z*100)/100,rotation:Math.round(ang),showRopes:!1};const cv=__CV[p.id];if(cv&&cv.ui!==0&&R()<.5){const v=cv.v[Math.floor(R()*cv.v.length)];it.colorName=v[0];it.color=v[1]}out.push(it)});
+ /* 芝生サイトの車は駐車場の枠 (白線 2.5m 間隔) に、通路側に頭を向けて停める */
+ const pk=A.park,a=pk[0],b=pk[1],d=pk[3],L=Math.hypot(b[0]-a[0],b[1]-a[1]),ux=(b[0]-a[0])/L,uz=(b[1]-a[1])/L,vx=d[0]-a[0],vz=d[1]-a[1],W=Math.hypot(vx,vz),
+  ang=Math.atan2(vx/W,-vz/W)*180/Math.PI;
+ G.filter(g=>g[3]).forEach((g,i)=>{const p=K.P(K.cars[Math.floor(R()*2)]);if(!p)return;const s2=2.5*(3+i*2)+1.25,x=a[0]+ux*s2+vx*.23,z=a[1]+uz*s2+vz*.23;
+  const it={...p,id:`typk-${i}`,presetId:p.id,x:Math.round(x*100)/100,y:Math.round(z*100)/100,rotation:Math.round((ang%360+360)%360),showRopes:!1};const cv=__CV[p.id];if(cv&&cv.ui!==0&&R()<.5){const v=cv.v[Math.floor(R()*cv.v.length)];it.colorName=v[0];it.color=v[1]}out.push(it)});
  return out}
 function __nkSample(){
  const R=__pRng(2121),pick=a=>a[Math.floor(R()*a.length)],all=[...y,...__CBR],P=id=>all.find(g=>g.id===id),out=[];
