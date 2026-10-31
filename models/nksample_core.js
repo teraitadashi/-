@@ -11,7 +11,7 @@ function __nkSample(){
  __NK.S.forEach(s=>{
   const th=Math.PI/2-s.f*Math.PI/180,c=Math.cos(th),sn=Math.sin(th),gx=s.x-__NKX+75,gz=s.z-__NKZ+70;
   const put=(id,lx,lz,lr,extra)=>{const p=P(id);if(!p)return;const o={...p,...(extra||{}),id:`nk${s.n}-${out.length}`,presetId:p.id,x:Math.round((gx+lx*c+lz*sn)*100)/100,y:Math.round((gz-lx*sn+lz*c)*100)/100,
-    rotation:Math.round(s.f-90+(lr||0)),showRopes:p.category===`tent`||p.category===`tarp`};const cv=__CV[p.id];if(cv&&cv.ui!==0&&R()<.5){const v=pick(cv.v);o.colorName=v[0];o.color=v[1]}out.push(o)};
+    rotation:Math.round(s.f-90+(lr||0)),showRopes:p.category===`tent`||p.category===`tarp`};const cv=__CV[p.id];if(p.category===`vehicle`)__carPaint(o,R);else if(cv&&cv.ui!==0&&R()<.5){const v=pick(cv.v);o.colorName=v[0];o.color=v[1]}out.push(o)};
   /* 16番サイトはユーザー指定の配置 (ルーミーフロント2ルームの前室にリビング、キャノピーの先に焚火台LL、駐車枠にMRワゴン) */
   if(s.n===16){const T=[-2.4,-1.25],at=(id,dx,dz,r,ex)=>put(id,T[0]+dx,T[1]+dz,r,ex);
    at('my-coleman-roomy-front-2room',0,0,0,{locked:!0});
@@ -23,7 +23,7 @@ function __nkSample(){
   /* テント (各区画に必ず1張) */
   const t=s.n===1?tents[0]:pick(tents);put(t[0],t[1],t[2],0);
   /* 車は駐車枠の中央 */
-  put(pick(cars),3.8,3,0);
+  put(__carPick(R),3.8,3,0);
   /* リビング: シェード(小さめのテントの区画だけ)・テーブル・チェア・焚き火・クーラー・ランタン */
   const small=t[0]===`my-pykes-peak-dome-1p`||t[0]===`my-coleman-touring-dome-air-lx`,tb=pick(tables),tx=-1.6,tz=2.1;
   if(small||R()<.35)put(pick(shades),tx,tz,0);
