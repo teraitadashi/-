@@ -13,7 +13,7 @@ function __campPool(){const all=[...y,...__CBR];return{P:id=>all.find(g=>g.id===
  shades:['my-coleman-instant-visor-shade-250p','br-ddhammocks-dd-tarp-3x3'],cars:['my-nissan-elgrand-e52','my-suzuki-mrwagon']}}
 /* 1グループを置く。(ox,oy) を中心に角度 rot (度・時計回り) で回す */
 function __campGroup(out,K,R,pfx,ox,oy,rot,o){const pick=a=>a[Math.floor(R()*a.length)],th=rot*Math.PI/180,c=Math.cos(th),s=Math.sin(th);
- const put=(id,lx,ly,lr)=>{const p=K.P(id);if(!p)return;const it={...p,id:`${pfx}-${out.length}`,presetId:p.id,x:Math.round((ox+lx*c-ly*s)*100)/100,y:Math.round((oy+lx*s+ly*c)*100)/100,
+ const put=(id,lx,ly,lr,ex)=>{const p=K.P(id);if(!p)return;const it={...p,...(ex||{}),id:`${pfx}-${out.length}`,presetId:p.id,x:Math.round((ox+lx*c-ly*s)*100)/100,y:Math.round((oy+lx*s+ly*c)*100)/100,
    rotation:Math.round(((rot+(lr||0))%360+360)%360),showRopes:p.category===`tent`||p.category===`tarp`};const cv=__CV[p.id];if(p.category===`vehicle`)__carPaint(it,R);else if(cv&&cv.ui!==0&&R()<.5){const v=pick(cv.v);it.colorName=v[0];it.color=v[1]}out.push(it)};
  const t=o.tent||pick(K.tents);put(t[0],t[1],t[2],0);
  const small=t[0]===`my-pykes-peak-dome-1p`||t[0]===`my-coleman-touring-dome-air-lx`,tx=0,tz=2.1;
@@ -22,6 +22,8 @@ function __campGroup(out,K,R,pfx,ox,oy,rot,o){const pick=a=>a[Math.floor(R()*a.l
  const nC=small?1+Math.floor(R()*2):2+Math.floor(R()*3),ch=pick(K.chairs),sp=[[tx-1,tz+.9,200],[tx+.9,tz+.9,160],[tx-1.15,tz-.3,250],[tx+1.1,tz-.3,110]];
  for(let i=0;i<nC;i++)put(R()<.7?ch:pick(K.chairs),sp[i][0],sp[i][1],sp[i][2]);
  put(pick(K.cook),tx+.12,tz,0);put(pick(K.fires),tx,tz+2.3,0);put(pick(K.coolers),tx+1.7,tz+.3,0);
+ /* インフィニティチェア (4割のグループ)。焚き火台の方へ向け、リクライニングはランダム */
+ if(R()<.4){const q=pick(__INF_REC);put(`br-coleman-infinity-chair`,tx+2.2,tz+3.6,70,{recline:q[0],depth:q[2],height:q[3]})}
  put(`my-coleman-packaway-lantern`,tx-.15,tz,0);
  if(o.car)put(__carPick(R),o.car[0],o.car[1],o.car[2]||0)}
 /* グループの外形 (テントのロープ〜焚き火台の先まで) を回して返す */

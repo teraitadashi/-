@@ -34,6 +34,8 @@ function __nkSample(){
   put(pick(fires),tx,tz+2.3,0);
   put(pick(coolers),tx+1.7,tz+.3,0);
   put(R()<.5?'my-coleman-packaway-lantern':'br-snowpeak-pile-driver',R()<.5?tx-.15:tx-2.4,R()<.5?tz:tz-1.4,0);
+  /* インフィニティチェア (4割の区画)。焚き火台の方へ向け、リクライニングはランダム */
+  if(R()<.4){const q=pick(__INF_REC);put('br-coleman-infinity-chair',tx+2.3,tz+1.7,75,{recline:q[0],depth:q[2],height:q[3]})}
   if(R()<.35)put('my-coleman-outdoor-wagon-nx',1.4,-3.8,90);
  });
  return out}
